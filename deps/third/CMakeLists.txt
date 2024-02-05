@@ -3,7 +3,9 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
 # Third Party Dependencies -> START
+if (WIN32)
 add_subdirectory("GLFW")
+endif()
 
 # glaze JSON library start
 FetchContent_Declare(
@@ -16,6 +18,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glaze)
 # glaze JSON library end
 
+if (WIN32)
 # ImGui start
 FetchContent_Declare(ImGui
     GIT_REPOSITORY git@github.com:ocornut/imgui.git
@@ -33,11 +36,12 @@ FetchContent_Declare(ImGuiTextEdit
     
 add_subdirectory("imgui")
 # ImGui end
+endif()
 
 # Zydis start
 FetchContent_Declare(zydis
     GIT_REPOSITORY git@github.com:zyantific/zydis.git
-    GIT_TAG v3.1.0
+    GIT_TAG v4.1.0
     GIT_SHALLOW TRUE
     GIT_PROGRESS ON)
     
@@ -47,12 +51,13 @@ add_subdirectory("zydis")
 # PolyHook start
 FetchContent_Declare(PolyHook2
     GIT_REPOSITORY git@github.com:stevemk14ebr/PolyHook_2_0.git
-    GIT_TAG 16bc0faf77a15b91b72763353901cfe34daf3174
+    GIT_TAG 5eb9b64af251d0790af108cdc1274d83a952ded7
     GIT_PROGRESS ON)
 
 add_subdirectory("PolyHook_2_0")
 # PolyHook end
 
+if (WIN32)
 # raw_pdb start
 FetchContent_Declare(raw_pdb
     GIT_REPOSITORY git@github.com:MolecularMatters/raw_pdb.git
@@ -61,6 +66,17 @@ FetchContent_Declare(raw_pdb
     
 add_subdirectory("raw_pdb")
 # raw_pdb end
+else()
+#FetchContent_Declare(DynoHook
+#    GIT_REPOSITORY https://github.com/qubka/DynoHook.git
+#    GIT_TAG f8ab1844ffe939032615a03bfe2bcb35aa06e094
+#    GIT_PROGRESS ON
+# apply patch if needed
+#     PATCH_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/DynoHook/00-compilebugs.patch
+#     UPDATE_DISCONNECTED 1
+#)
+#add_subdirectory("DynoHook")
+endif()
 
 # corrosion start
 FetchContent_Declare(

@@ -114,7 +114,7 @@ namespace RC::UVTD
 
                     shared_container.join(run_container);
 
-                    Output::send(STR("Code generated.\n"));
+                    Output::send(SYSSTR("Code generated.\n"));
                 }
             });
         }
@@ -125,9 +125,9 @@ namespace RC::UVTD
             MemberVarsWrapperGenerator wrapper_generator{std::move(shared_container)};
             wrapper_generator.generate_files();
 
-            Output::send(STR("Code generated.\n"));
+            Output::send(SYSSTR("Code generated.\n"));
         }
 
-        Output::send(STR("All done.\n"));
+        Output::send(SYSSTR("All done.\n"));
     }
 } // namespace RC::UVTD
