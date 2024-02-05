@@ -6,7 +6,7 @@ project(${TARGET})
 option(UE4SS_${TARGET}_BUILD_SHARED "Build as a shared lib" OFF)
 
 set(${TARGET}_Sources
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScanner.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScannerLinux.cpp"
         )
 
 string(REGEX REPLACE "(.)([A-Z])" "\\1_\\2" MODULE_NAME ${TARGET})
