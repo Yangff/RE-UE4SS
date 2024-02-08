@@ -578,6 +578,7 @@ namespace RC
         // Virtual function offset overrides
         TRY([&]() {
             ProfilerScopeNamed("loading virtual function offset overrides");
+            fprintf(stderr, "Loading offset\n");
             static File::StringType virtual_function_offset_override_file{(m_working_directory / SYSSTR("VTableLayout.ini")).generic_string()};
             if (std::filesystem::exists(virtual_function_offset_override_file))
             {
@@ -760,8 +761,11 @@ namespace RC
 
                 file.close();
             }
+            
+            fprintf(stderr, "Loading offset done\n");
         });
 
+            fprintf(stderr, "Setting hooks\n");
         config.bHookProcessInternal = settings_manager.Hooks.HookProcessInternal;
         config.bHookProcessLocalScriptFunction = settings_manager.Hooks.HookProcessLocalScriptFunction;
         config.bHookInitGameState = settings_manager.Hooks.HookInitGameState;
@@ -769,7 +773,7 @@ namespace RC
         config.bHookBeginPlay = settings_manager.Hooks.HookBeginPlay;
         config.bHookLocalPlayerExec = settings_manager.Hooks.HookLocalPlayerExec;
         config.FExecVTableOffsetInLocalPlayer = settings_manager.Hooks.FExecVTableOffsetInLocalPlayer;
-
+        fprintf(stderr, "Before UnrealInitializer::Initialize\n");
         Unreal::UnrealInitializer::Initialize(config);
 
         bool can_create_custom_events{true};
