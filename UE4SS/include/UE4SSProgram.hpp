@@ -108,6 +108,7 @@ namespace RC
         
         SystemStringType m_module_file_path_str;
         SystemStringType m_working_directory_str;
+        SystemStringType m_game_executable_str;
         SystemStringType m_mods_directory_str;
 
         std::filesystem::path m_game_executable_directory;
@@ -211,6 +212,7 @@ namespace RC
         RC_UE4SS_API auto get_module_directory() -> SystemStringViewType;
         RC_UE4SS_API auto get_working_directory() -> SystemStringViewType;
         RC_UE4SS_API auto get_mods_directory() -> SystemStringViewType;
+        RC_UE4SS_API auto UE4SSProgram::get_game_directory() -> SystemStringViewType;
         RC_UE4SS_API auto generate_uht_compatible_headers() -> void;
         RC_UE4SS_API auto generate_cxx_headers(const std::filesystem::path& output_dir) -> void;
         RC_UE4SS_API auto generate_lua_types(const std::filesystem::path& output_dir) -> void;
