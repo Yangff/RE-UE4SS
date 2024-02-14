@@ -828,6 +828,7 @@ namespace RC
         lua_getfield(lua_state, -1, "path");
         std::string current_paths = lua_tostring(lua_state, -1);
         current_paths.append(std::format(";{}" LUA_DIRSEP "{}" LUA_DIRSEP "Scripts" LUA_DIRSEP "?.lua", to_string(m_program.get_mods_directory()).c_str(), to_string(get_name())));
+        current_paths.append(std::format(";{}" LUA_DIRSEP "{}" LUA_DIRSEP "scripts" LUA_DIRSEP "?.lua", to_string(m_program.get_mods_directory()).c_str(), to_string(get_name())));
         current_paths.append(std::format(";{}" LUA_DIRSEP "shared" LUA_DIRSEP "?.lua", to_string(m_program.get_mods_directory()).c_str()));
         current_paths.append(std::format(";{}" LUA_DIRSEP "shared" LUA_DIRSEP "?" LUA_DIRSEP "?.lua", to_string(m_program.get_mods_directory()).c_str()));
         lua_pop(lua_state, 1);
@@ -837,6 +838,7 @@ namespace RC
         lua_getfield(lua_state, -1, "cpath");
         std::string current_cpaths = lua_tostring(lua_state, -1);
         current_cpaths.append(std::format(";{}" LUA_DIRSEP "{}" LUA_DIRSEP "Scripts" LUA_DIRSEP "?.dll", to_string(m_program.get_mods_directory()).c_str(), to_string(get_name())));
+        current_cpaths.append(std::format(";{}" LUA_DIRSEP "{}" LUA_DIRSEP "scripts" LUA_DIRSEP "?.dll", to_string(m_program.get_mods_directory()).c_str(), to_string(get_name())));
         current_cpaths.append(std::format(";{}" LUA_DIRSEP "{}" LUA_DIRSEP "?.dll", to_string(m_program.get_mods_directory()).c_str(), to_string(get_name())));
         lua_pop(lua_state, 1);
         lua_pushstring(lua_state, current_cpaths.c_str());
