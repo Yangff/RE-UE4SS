@@ -1382,6 +1382,12 @@ namespace RC
         return m_mods_directory_str;
     }
 
+    auto UE4SSProgram::get_game_directory() -> File::StringViewType
+    {
+        m_game_executable_str = m_game_executable_directory.generic_string();
+        return m_game_executable_str;
+    }
+
     auto UE4SSProgram::generate_uht_compatible_headers() -> void
     {
         ProfilerScope();
