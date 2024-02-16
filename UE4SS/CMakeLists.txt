@@ -193,8 +193,9 @@ target_link_libraries(${TARGET} PUBLIC
     set(THREADS_PREFER_PTHREAD_FLAG OFF)
 endif()
 
-
-set_property(TARGET ${TARGET} PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)
+if (WIN32)
+    set_property(TARGET ${TARGET} PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)
+endif()
 
 # Making sure that the linked C runtime is a dll so that C++ mods will work correctly
 if (WIN32)
