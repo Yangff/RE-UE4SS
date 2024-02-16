@@ -37,7 +37,6 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "16.0"
-          platform: x64
           env: true
           ubuntu-version: 22.04
       - uses: dtolnay/rust-toolchain@1.76.0
