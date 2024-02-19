@@ -59,7 +59,6 @@ add_subdirectory("zydis")
 FetchContent_Declare(PolyHook2
     GIT_REPOSITORY git@github.com:stevemk14ebr/PolyHook_2_0.git
     GIT_TAG fd2a88f09c8ae89440858fc52573656141013c7f
-    GIT_TAG 5eb9b64af251d0790af108cdc1274d83a952ded7
     GIT_PROGRESS ON)
 
 add_subdirectory("PolyHook_2_0")
