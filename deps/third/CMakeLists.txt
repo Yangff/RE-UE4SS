@@ -75,6 +75,16 @@ add_subdirectory("raw_pdb")
 # raw_pdb end
 endif()
 
+
+# fmtlib start
+FetchContent_Declare(fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt
+    GIT_TAG 10.2.1
+    GIT_PROGRESS ON)
+
+add_subdirectory("fmt")
+# fmtlib end
+
 # corrosion start
 FetchContent_Declare(
     Corrosion

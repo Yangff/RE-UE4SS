@@ -178,7 +178,7 @@ target_link_libraries(${TARGET} PUBLIC
     Unreal SinglePassSigScanner LuaMadeSimple
     Function IniParser JSON
     Constructs Helpers
-    MProgram ScopedTimer Profiler
+    MProgram ScopedTimer Profiler fmt
 )
 if (WIN32)
 target_link_libraries(${TARGET} PUBLIC
