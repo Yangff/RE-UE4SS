@@ -73,16 +73,6 @@ FetchContent_Declare(raw_pdb
     
 add_subdirectory("raw_pdb")
 # raw_pdb end
-else()
-#FetchContent_Declare(DynoHook
-#    GIT_REPOSITORY https://github.com/qubka/DynoHook.git
-#    GIT_TAG f8ab1844ffe939032615a03bfe2bcb35aa06e094
-#    GIT_PROGRESS ON
-# apply patch if needed
-#     PATCH_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/DynoHook/00-compilebugs.patch
-#     UPDATE_DISCONNECTED 1
-#)
-#add_subdirectory("DynoHook")
 endif()
 
 # corrosion start
