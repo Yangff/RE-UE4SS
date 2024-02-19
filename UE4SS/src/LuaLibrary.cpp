@@ -50,7 +50,7 @@ namespace RC::LuaLibrary
                                         lua.get_type_string()));
         }
 
-        SystemStringType format = to_generic_string(lua.get_string());
+        auto format = to_system_string(lua.get_string());
 
         // The output device is at the top of the stack, therefore we must call this function after retrieving all of the params.
         auto* output_device = get_outputdevice_ref(lua);
@@ -61,7 +61,7 @@ namespace RC::LuaLibrary
             Output::send(formatted_string);
             if (output_device)
             {
-                output_device->Log(SystemStringToUEString(formatted_string).c_str());
+                output_device->Log(to_ue(formatted_string).c_str());
             }
         }
         else if (stack_size >= 2)
@@ -107,7 +107,7 @@ namespace RC::LuaLibrary
         // Logging will only happen to the debug console but it's something at least
         if (!Output::has_internal_error())
         {
-            Output::send(SYSSTR("Error: {}\n"), to_generic_string(e));
+            Output::send(SYSSTR("Error: {}\n"), to_system(e));
         }
         else
         {
