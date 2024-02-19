@@ -12,7 +12,7 @@
 
 namespace RC
 {
-    CppMod::CppMod(UE4SSProgram& program, SystemStringType&& mod_name, SystemStringType&& mod_path) : Mod(program, std::move(mod_name), std::move(mod_path))
+    CppMod::CppMod(UE4SSProgram& program, UEStringType&& mod_name, UEStringType&& mod_path) : Mod(program, std::move(mod_name), std::move(mod_path))
     {
         std::filesystem::path m_dlls_path = m_mod_path;
 
@@ -34,7 +34,7 @@ namespace RC
         m_main_dll_module = LoadLibraryW(dll_path.c_str());
         if (!m_main_dll_module)
         {
-            Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, error code: 0x{:x}\n"), dll_path, m_mod_name, GetLastError());
+            Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, error code: 0x{:x}\n"), to_system_string(dll_path), m_mod_name, GetLastError());
             set_installable(false);
             return;
         }
@@ -67,7 +67,7 @@ namespace RC
             if (!Output::has_internal_error())
             {
                 Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, because: {}\n"),
-                                                to_system_string(std::filesystem::path {m_dlls_path} / CONCATENATE_WIDE_STRING("main", DLLEXT))  + "\n",
+                                                to_system_string(std::filesystem::path{m_dlls_path} / CONCATENATE_WIDE_STRING("main", DLLEXT)) + SYSSTR("\n"),
                                                 m_mod_name,
                                                 e.what());
             }
@@ -87,7 +87,7 @@ namespace RC
         }
     }
 
-    auto CppMod::fire_on_lua_start(SystemStringViewType mod_name,
+    auto CppMod::fire_on_lua_start(UEStringViewType mod_name,
                                    LuaMadeSimple::Lua& lua,
                                    LuaMadeSimple::Lua& main_lua,
                                    LuaMadeSimple::Lua& async_lua,
@@ -108,7 +108,7 @@ namespace RC
         }
     }
 
-    auto CppMod::fire_on_lua_stop(SystemStringViewType mod_name,
+    auto CppMod::fire_on_lua_stop(UEStringViewType mod_name,
                                   LuaMadeSimple::Lua& lua,
                                   LuaMadeSimple::Lua& main_lua,
                                   LuaMadeSimple::Lua& async_lua,
@@ -153,7 +153,7 @@ namespace RC
         }
     }
 
-    auto CppMod::fire_dll_load(SystemStringViewType dll_name) -> void
+    auto CppMod::fire_dll_load(UEStringViewType dll_name) -> void
     {
         if (m_mod)
         {
