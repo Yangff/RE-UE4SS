@@ -375,6 +375,12 @@ namespace RC
         set_is_in_game_thread(lua_data.lua, false);
     }
 
+    static auto lua_unreal_script_function_replaced(Unreal::UnrealScriptFunctionCallableContext context, void* custom_data) -> void
+    {
+        lua_unreal_script_function_hook_pre(context, custom_data);
+        lua_unreal_script_function_hook_post(context, custom_data);
+    }
+
     static auto register_input_globals(const LuaMadeSimple::Lua& lua) -> void
     {
         LuaMadeSimple::Lua::Table key_table = lua.prepare_new_table();
@@ -2981,6 +2987,7 @@ Overloads:
             else if (func_ptr && func_ptr == Unreal::UObject::ProcessInternalInternal.get_function_address() &&
                      !unreal_function->HasAnyFunctionFlags(Unreal::EFunctionFlags::FUNC_Native))
             {
+                /*
                 ++m_last_generic_hook_id;
                 auto [callback_data, _] = LuaMod::m_script_hook_callbacks.emplace(UEStringToSystemString(unreal_function->GetFullName()), LuaCallbackData{lua, nullptr, {}});
                 callback_data->second.registry_indexes.emplace_back(LuaMod::LuaCallbackData::RegistryIndex{lua_callback_registry_index, m_last_generic_hook_id});
@@ -2989,6 +2996,17 @@ Overloads:
                 Output::send<LogLevel::Verbose>(SYSSTR("[RegisterHook] Registered script hook ({}, {}) for {}\n"),
                                                 generic_pre_id,
                                                 generic_post_id,
+                                                UEStringToSystemString(unreal_function->GetFullName()));
+                                                */
+                auto& custom_data = g_hooked_script_function_data.emplace_back(std::make_unique<LuaUnrealScriptFunctionData>(
+                        LuaUnrealScriptFunctionData{0, 0, unreal_function, mod, *hook_lua, lua_callback_registry_index, -1, lua_thread_registry_index}));
+                auto pre_id = unreal_function->RegisterReplacement(&lua_unreal_script_function_replaced, custom_data.get());
+                custom_data->pre_callback_id = pre_id;
+                m_generic_hook_id_to_native_hook_id.emplace(++m_last_generic_hook_id, pre_id);
+                generic_pre_id = m_last_generic_hook_id;
+                generic_post_id = m_last_generic_hook_id;
+                Output::send<LogLevel::Verbose>(SYSSTR("[RegisterHook] Registered replacement hook ({}) for {}\n"),
+                                                generic_pre_id,
                                                 UEStringToSystemString(unreal_function->GetFullName()));
             }
             else
