@@ -1151,7 +1151,7 @@ Overloads:
                     }
                     catch (std::runtime_error& e)
                     {
-                        Output::send(SYSSTR("{}\n"), to_system(lua.handle_error(e.what())));
+                        Output::send(SYSSTR("{}\n"), lua.handle_error(e.what()));
                     }
                 };
 
@@ -1270,7 +1270,7 @@ Overloads:
                     }
                     catch (std::runtime_error& e)
                     {
-                        Output::send(SYSSTR("{}\n"), to_system(lua.handle_error(e.what())));
+                        Output::send(SYSSTR("{}\n"), lua.handle_error(e.what()));
                     }
                 };
 
@@ -3802,7 +3802,7 @@ Overloads:
                         }
                         catch (std::runtime_error& e)
                         {
-                            Output::send(SYSSTR("{}\n"), to_system(e.what()));
+                            Output::send(SYSSTR("{}\n"), e.what());
                         }
 
                         if (cancel)

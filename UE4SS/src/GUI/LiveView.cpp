@@ -2859,7 +2859,7 @@ namespace RC::GUI
                 }
                 else
                 {
-                    Output::send(SYSSTR("Search for: {}\n"), search_buffer.empty() ? STR("") : to_wstring(search_buffer));
+                    Output::send(SYSSTR("Search for: {}\n"), search_buffer.empty() ? SYSSTR("") : search_buffer);
                     s_name_to_search_by = search_buffer;
                     m_object_iterator = &LiveView::guobjectarray_by_name_iterator;
                     m_is_searching_by_name = true;
