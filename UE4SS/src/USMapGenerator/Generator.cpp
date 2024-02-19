@@ -21,6 +21,9 @@
 #include <Unreal/UScriptStruct.hpp>
 #include <Unreal/UnrealVersion.hpp>
 
+#undef min
+#undef max
+
 namespace RC::OutTheShade
 {
     using namespace ::RC::Unreal;
