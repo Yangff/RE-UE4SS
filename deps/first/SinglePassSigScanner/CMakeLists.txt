@@ -7,10 +7,12 @@ option(UE4SS_${TARGET}_BUILD_SHARED "Build as a shared lib" OFF)
 
 if (WIN32)
 set(${TARGET}_Sources
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScanner.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScannerWin32.cpp"
         )
 else()
 set(${TARGET}_Sources
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScanner.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/SinglePassSigScannerLinux.cpp"
         )
 endif()
