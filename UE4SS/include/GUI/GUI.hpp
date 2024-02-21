@@ -10,19 +10,36 @@
 #include <Helpers/String.hpp>
 #include <imgui.h>
 
+#ifdef LINUX
+namespace ImGui {
+    static void BeginDisabled(bool disabled = true) {}
+    static void EndDisabled() {}
+}
+#endif
+
 namespace RC::GUI
 {
     class GUITab; // dunno why forward declaration is necessary
 
     enum class GfxBackend
     {
+#ifdef WIN32
         DX11,
         GLFW3_OpenGL3,
+#endif
+#ifdef LINUX
+        TUI
+#endif
     };
 
     enum class OSBackend
     {
+#ifdef WIN32
         Windows,
+#endif
+#ifdef LINUX
+        TUI,
+#endif
     };
 
     struct WindowSize
