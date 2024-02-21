@@ -58,9 +58,6 @@ message("Major: ${UE4SS_LIB_VERSION_MAJOR}, Minor: ${UE4SS_LIB_VERSION_MINOR}, H
 set(GUI_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/GUI.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/GUITab.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/DX11.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/GLFW3_OpenGL3.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/Windows.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/Console.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/ConsoleOutputDevice.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/LiveView.cpp"
@@ -69,6 +66,16 @@ set(GUI_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/ImGuiUtility.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/UFunctionCallerWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/SearcherWidget.cpp"
+)
+
+set(GUI_Sources_Win32
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/DX11.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/GLFW3_OpenGL3.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/Windows.cpp"
+)
+
+set(GUI_Sources_Linux
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/TUI.cpp"
 )
 
 set(${TARGET}_Sources
@@ -120,7 +127,7 @@ set(${TARGET}_Sources
 
 if (WIN32)
     # append GUI sources
-    list(APPEND ${TARGET}_Sources ${GUI_Sources}
+    list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Win32}
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryWin32.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CrashDumper.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Mod/CppMod.cpp")
@@ -129,8 +136,9 @@ if (WIN32)
     add_compile_definitions(HAS_INPUT)
     add_compile_definitions(HAS_CPPMOD)
 else()
-    list(APPEND ${TARGET}_Sources
+    list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Linux}
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryLinux.cpp")
+    add_compile_definitions(HAS_GUI)
 endif()
 
 add_library(${TARGET} SHARED ${UE4SS_Sources})
@@ -181,12 +189,12 @@ target_link_libraries(${TARGET} PUBLIC
     MProgram ScopedTimer Profiler
 )
 if (WIN32)
-target_link_libraries(${TARGET} PUBLIC
-    Input ImGui PolyHook_2 d3d11 GLFW opengl32 dbghelp psapi 
-    patternsleuth_bind)
+    target_link_libraries(${TARGET} PUBLIC
+        Input ImGui PolyHook_2 d3d11 GLFW opengl32 dbghelp psapi 
+        patternsleuth_bind)
 else()
-target_link_libraries(${TARGET} PUBLIC
-    patternsleuth_bind PolyHook_2 dl)
+    target_link_libraries(${TARGET} PUBLIC
+        patternsleuth_bind PolyHook_2 dl imtui imtui-ncurses ImGuiText)
     # add pthread?
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)

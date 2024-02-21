@@ -75,6 +75,20 @@ add_subdirectory("raw_pdb")
 # raw_pdb end
 endif()
 
+if (LINUX)
+# imtui start
+FetchContent_Declare(imtui
+    GIT_REPOSITORY https://github.com/ggerganov/imtui.git
+    GIT_TAG 9f39c3e090c9b1e15557eac38a2f4389462f59df
+    GIT_PROGRESS ON)
+FetchContent_Declare(ImGuiTextEdit
+    GIT_REPOSITORY git@github.com:UE4SS-RE/ImGuiColorTextEdit.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS ON
+    CONFIGURE_COMMAND "")
+add_subdirectory("imtui")
+endif()
 
 # fmtlib start
 #FetchContent_Declare(fmt

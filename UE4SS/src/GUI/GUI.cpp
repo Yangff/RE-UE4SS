@@ -6,10 +6,15 @@
 #include <DynamicOutput/DynamicOutput.hpp>
 #include <ExceptionHandling.hpp>
 #include <GUI/BPMods.hpp>
-#include <GUI/DX11.hpp>
 #include <GUI/Dumpers.hpp>
-#include <GUI/GLFW3_OpenGL3.hpp>
+
+#ifdef WIN32
 #include <GUI/Windows.hpp>
+#include <GUI/DX11.hpp>
+#include <GUI/GLFW3_OpenGL3.hpp>
+#else
+#include <GUI/TUI.hpp>
+#endif
 
 #include <UE4SSProgram.hpp>
 #include <Unreal/UnrealInitializer.hpp>
@@ -17,11 +22,21 @@
 #undef TEXT
 #endif
 
+#ifdef WIN32
 #include "Roboto.hpp"
 #include "FaSolid900.hpp"
-#include <imgui.h>
 #include <IconsFontAwesome5.h>
+#else // LINUX
+#define ICON_FA_TERMINAL
+#define ICON_FA_ARCHIVE
+#define ICON_FA_SYNC
+#define ICON_FA_FILE_ALT
+#define ICON_FA_EYE
+#define ICON_FA_PUZZLE_PIECE
+#endif
 
+
+#include <imgui.h>
 namespace RC::GUI
 {
     ImColor g_imgui_bg_color{0.22f, 0.22f, 0.22f, 1.00f};
@@ -88,8 +103,10 @@ namespace RC::GUI
                         m_event_thread_busy = true;
                         UE4SSProgram::get_program().queue_event(
                                 [](void* data) {
-                                    UE4SSProgram::dump_all_objects_and_properties(UE4SSProgram::get_program().get_object_dumper_output_directory() + STR("\\") +
-                                                                                  UE4SSProgram::m_object_dumper_file_name);
+                                    UE4SSProgram::dump_all_objects_and_properties(
+                                        to_system( std::filesystem::path { UE4SSProgram::get_program().get_object_dumper_output_directory() } 
+                                                /  UE4SSProgram::m_object_dumper_file_name)
+                                    );
                                     static_cast<GUI::DebuggingGUI*>(data)->m_event_thread_busy = false;
                                 },
                                 this);
@@ -386,7 +403,7 @@ namespace RC::GUI
         io.Fonts->Clear();
 
         float base_font_size = 14 * UE4SSProgram::settings_manager.Debug.DebugGUIFontScaling;
-
+#ifdef WIN32
         ImFontConfig font_cfg;
         font_cfg.FontDataOwnedByAtlas = false; // if true it will try to free memory and fail
         io.Fonts->AddFontFromMemoryTTF(Roboto, sizeof(Roboto), base_font_size, &font_cfg);
@@ -399,7 +416,7 @@ namespace RC::GUI
         icons_cfg.PixelSnapH = true;
         icons_cfg.GlyphMinAdvanceX = icon_font_size;
         io.Fonts->AddFontFromMemoryTTF(FaSolid900, sizeof(FaSolid900), icon_font_size, &icons_cfg, icons_ranges);
-
+#endif
         m_os_backend->init();
         m_gfx_backend->init();
 
@@ -417,6 +434,7 @@ namespace RC::GUI
     {
         switch (backend)
         {
+            #ifdef WIN32
         case GfxBackend::DX11:
             m_gfx_backend = std::make_unique<Backend_DX11>();
             m_os_backend = std::make_unique<Backend_Windows>();
@@ -425,6 +443,11 @@ namespace RC::GUI
             m_gfx_backend = std::make_unique<Backend_GLFW3_OpenGL3>();
             m_os_backend = std::make_unique<Backend_NoOS>();
             break;
+            #else
+        case GfxBackend::TUI:
+            m_gfx_backend = std::make_unique<Backend_GfxTUI>();
+            m_os_backend = std::make_unique<Backend_TUI>();
+            #endif
         }
 
         m_gfx_backend->set_os_backend(m_os_backend.get());
@@ -455,7 +478,7 @@ namespace RC::GUI
 
         if (!debugging_ui)
         {
-            Output::send<LogLevel::Error>(STR("Could not start GUI render thread because 'debugging_ui' was nullptr."));
+            Output::send<LogLevel::Error>(SYSSTR("Could not start GUI render thread because 'debugging_ui' was nullptr."));
             return;
         }
         debugging_ui->setup(std::move(stop_token));

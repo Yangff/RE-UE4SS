@@ -832,7 +832,7 @@ namespace RC
             {
                 m_debugging_gui.get_live_view().set_listeners_allowed(false);
             }
-
+#ifdef HAS_INPUT
             m_input_handler.register_keydown_event(Input::Key::O, {Input::ModifierKey::CONTROL}, [&]() {
                 TRY([&] {
                     auto was_gui_open = get_debugging_ui().is_open();
@@ -843,6 +843,7 @@ namespace RC
                     }
                 });
             });
+#endif
         }
 #endif
 
