@@ -1039,6 +1039,11 @@ namespace RC
                 // Create the mod but don't install it yet
                 if (std::filesystem::exists(sub_directory.path() / "scripts"))
                     m_mods.emplace_back(std::make_unique<LuaMod>(*this, to_system_string(sub_directory.path().stem()), to_system_string(sub_directory.path())));
+                #ifdef LINUX
+                else if (std::filesystem::exists(sub_directory.path() / "Scripts"))
+                    // avoid we have both "scripts" and "Scripts" in the same mod
+                    m_mods.emplace_back(std::make_unique<LuaMod>(*this, to_system_string(sub_directory.path().stem()), to_system_string(sub_directory.path())));
+                #endif
 #ifdef HAS_CPPMOD
                 if (std::filesystem::exists(sub_directory.path() / "dlls"))
                     m_mods.emplace_back(std::make_unique<CppMod>(*this, to_system_string(sub_directory.path().stem()), to_system_string(sub_directory.path())));
@@ -1107,8 +1112,8 @@ namespace RC
             {
                 continue;
             }
-            #endif
             mod->fire_unreal_init();
+            #endif
         }
     }
 
@@ -1122,8 +1127,8 @@ namespace RC
             {
                 continue;
             }
-            #endif
             mod->fire_program_start();
+            #endif
         }
     }
 
