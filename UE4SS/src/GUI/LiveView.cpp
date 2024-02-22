@@ -3118,7 +3118,7 @@ namespace RC::GUI
         ImGui_Splitter(false, 4.0f, &m_top_size, &m_bottom_size, 32.0f, 32.0f, -14.0f);
 #else
         m_bottom_size = (ImGui::GetContentRegionMaxAbs().y - m_top_size) - 2.0f;
-        ImGui_Splitter(false, 4.0f, &m_top_size, &m_bottom_size, 12.0f, 12.0f, XOFFSET);
+        ImGui_Splitter(false, 1.2f, &m_top_size, &m_bottom_size, 12.0f, 12.0f, ImGui::GetContentRegionMaxAbs().x);
 #endif
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{0.156f, 0.156f, 0.156f, 1.0f});
         ImGui::BeginChild("LiveView_TreeView", {0, m_top_size}, true);
