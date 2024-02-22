@@ -63,6 +63,14 @@
 #undef max
 #undef min
 
+#ifdef WIN32
+#define XOFFSET (-14.0f)
+#define XDIV 1
+#else
+#define XOFFSET 0
+#define XDIV (6.66f)
+#endif
+
 namespace RC::GUI
 {
     using namespace Unreal;
@@ -2598,7 +2606,7 @@ namespace RC::GUI
 
     auto LiveView::render_info_panel() -> void
     {
-        ImGui::BeginChild("LiveView_InfoPanel", {-14.0f, m_bottom_size}, true, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("LiveView_InfoPanel", {XOFFSET, m_bottom_size}, true, ImGuiWindowFlags_HorizontalScrollbar);
 
         size_t next_object_index_to_select{};
 
@@ -2833,7 +2841,7 @@ namespace RC::GUI
         {
             ImGui::BeginDisabled();
         }
-        ImGui::PushItemWidth(-160.0f);
+        ImGui::PushItemWidth(-160.0f / XDIV);
         bool push_inactive_text_color = !m_search_field_cleared;
         if (push_inactive_text_color)
         {
@@ -3113,11 +3121,15 @@ namespace RC::GUI
             ImGui::SetClipboardText(to_string(result).c_str());
         }
 
+#ifdef WIN32
         m_bottom_size = (ImGui::GetContentRegionMaxAbs().y - m_top_size) - 94.0f;
         ImGui_Splitter(false, 4.0f, &m_top_size, &m_bottom_size, 32.0f, 32.0f, -14.0f);
-
+#else
+        m_bottom_size = (ImGui::GetContentRegionMaxAbs().y - m_top_size) - 2.0f;
+        ImGui_Splitter(false, 4.0f, &m_top_size, &m_bottom_size, 12.0f, 12.0f, XOFFSET);
+#endif
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{0.156f, 0.156f, 0.156f, 1.0f});
-        ImGui::BeginChild("LiveView_TreeView", {-14.0f, m_top_size}, true);
+        ImGui::BeginChild("LiveView_TreeView", {0, m_top_size}, true);
 
         auto do_iteration = [&](int32_t int_data_1 = 0, int32_t int_data_2 = 0) {
             ((*this).*((*this).m_object_iterator))(int_data_1, int_data_2, [&](UObject* object) {
