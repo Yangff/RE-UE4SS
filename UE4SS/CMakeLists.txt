@@ -11,6 +11,7 @@ endif()
 # Release settings -> START
 option(UE4SS_LIB_BETA_IS_STARTED "Have beta releases started for the current major version" ON)
 option(UE4SS_LIB_IS_BETA "Is this a beta release" ON)
+option(UE4SS_USE_TUI_ON_LINUX "Use TUI on Linux" ON)
 # Release settings -> END
 
 # Codegen settings -> START
@@ -136,9 +137,12 @@ if (WIN32)
     add_compile_definitions(HAS_INPUT)
     add_compile_definitions(HAS_CPPMOD)
 else()
-    list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Linux}
+    if (UE4SS_USE_TUI_ON_LINUX)
+        list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Linux})
+        add_compile_definitions(HAS_GUI)
+    endif()
+    list(APPEND ${TARGET}_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryLinux.cpp")
-    add_compile_definitions(HAS_GUI)
 endif()
 
 add_library(${TARGET} SHARED ${UE4SS_Sources})
@@ -194,7 +198,10 @@ if (WIN32)
         patternsleuth_bind)
 else()
     target_link_libraries(${TARGET} PUBLIC
-        patternsleuth_bind PolyHook_2 dl imtui imtui-ncurses ImGuiText)
+        patternsleuth_bind PolyHook_2 dl)
+    if (UE4SS_USE_TUI_ON_LINUX)
+        target_link_libraries(${TARGET} PUBLIC imtui imtui-ncurses ImGuiText)
+    endif()
     # add pthread?
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
