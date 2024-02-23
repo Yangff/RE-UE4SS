@@ -27,12 +27,7 @@
 #include "FaSolid900.hpp"
 #include <IconsFontAwesome5.h>
 #else // LINUX
-#define ICON_FA_TERMINAL
-#define ICON_FA_ARCHIVE
-#define ICON_FA_SYNC
-#define ICON_FA_FILE_ALT
-#define ICON_FA_EYE
-#define ICON_FA_PUZZLE_PIECE
+#include <GUI/NerdFont.hpp>
 #endif
 
 
@@ -86,7 +81,7 @@ namespace RC::GUI
 
             if (ImGui::BeginTabBar("##MainTabBar", ImGuiTabBarFlags_None))
             {
-                if (ImGui::BeginTabItem(ICON_FA_TERMINAL " Console"))
+                if (ImGui::BeginTabItem(ATTACH_ICON(ICON_FA_TERMINAL, " Console")))
                 {
                     get_console().render_search_box();
 
@@ -98,7 +93,7 @@ namespace RC::GUI
                     {
                         ImGui::BeginDisabled(true);
                     }
-                    if (ImGui::Button(ICON_FA_ARCHIVE " Dump Objects & Properties"))
+                    if (ImGui::Button(ATTACH_ICON(ICON_FA_ARCHIVE, " Dump Objects & Properties")))
                     {
                         m_event_thread_busy = true;
                         UE4SSProgram::get_program().queue_event(
@@ -121,7 +116,7 @@ namespace RC::GUI
                         ImGui::BeginDisabled(true);
                     }
                     ImGui::SameLine();
-                    if (ImGui::Button(ICON_FA_SYNC " Restart All Mods"))
+                    if (ImGui::Button(ATTACH_ICON(ICON_FA_SYNC, " Restart All Mods")))
                     {
                         m_event_thread_busy = true;
                         UE4SSProgram::get_program().queue_event(
@@ -149,7 +144,7 @@ namespace RC::GUI
                 {
                     ImGui::BeginDisabled(true);
                 }
-                if (ImGui::BeginTabItem(ICON_FA_FILE_ALT " Live View"))
+                if (ImGui::BeginTabItem(ATTACH_ICON(ICON_FA_FILE_ALT, " Live View")))
                 {
                     listeners_are_required = true;
                     m_live_view.set_listeners();
@@ -161,7 +156,7 @@ namespace RC::GUI
                     should_unset_listeners = true;
                 }
 
-                if (ImGui::BeginTabItem(ICON_FA_EYE " Watches"))
+                if (ImGui::BeginTabItem(ATTACH_ICON(ICON_FA_EYE, " Watches")))
                 {
                     listeners_are_required = true;
                     m_live_view.render_watches();
@@ -177,13 +172,13 @@ namespace RC::GUI
                     m_live_view.unset_listeners();
                 }
 
-                if (ImGui::BeginTabItem(ICON_FA_ARCHIVE " Dumpers"))
+                if (ImGui::BeginTabItem(ATTACH_ICON(ICON_FA_ARCHIVE, " Dumpers")))
                 {
                     Dumpers::render();
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem(ICON_FA_PUZZLE_PIECE " BP Mods"))
+                if (ImGui::BeginTabItem(ATTACH_ICON(ICON_FA_PUZZLE_PIECE, " BP Mods")))
                 {
                     BPMods::render();
                     ImGui::EndTabItem();
