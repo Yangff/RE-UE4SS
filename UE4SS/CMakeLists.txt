@@ -11,7 +11,6 @@ endif()
 # Release settings -> START
 option(UE4SS_LIB_BETA_IS_STARTED "Have beta releases started for the current major version" ON)
 option(UE4SS_LIB_IS_BETA "Is this a beta release" ON)
-option(UE4SS_USE_TUI_ON_LINUX "Use TUI on Linux" ON)
 # Release settings -> END
 
 # Codegen settings -> START
