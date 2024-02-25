@@ -35,6 +35,8 @@ endif ()
 # Enabling c++20 support
 target_compile_features(${TARGET} PUBLIC cxx_std_20)
 
+target_link_libraries(${TARGET} PUBLIC Helpers)
+
 target_compile_definitions(${TARGET} PRIVATE
         RC_${MODULE_NAME}_EXPORTS
         $<$<NOT:$<BOOL:${UE4SS_${TARGET}_BUILD_SHARED}>>:
