@@ -115,6 +115,11 @@ namespace RC::Input
         m_subscribed_keys.fill(false);
     }
 
+    auto Handler::clear_subscribed_key(Key k) -> void
+    {
+		m_subscribed_keys[k] = false;
+    }
+
     auto Handler::get_allow_input() -> bool
     {
         return m_allow_input;
