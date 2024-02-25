@@ -14,7 +14,10 @@ namespace RC::GUI::Filter
 
         static auto post_eval(UObject* object) -> bool
         {
-            if (!s_value || s_internal_value.empty()) { return false; }
+            if (!s_value || s_internal_value.empty())
+            {
+                return false;
+            }
 
             auto as_struct = Cast<UStruct>(object);
             if (!as_struct)
