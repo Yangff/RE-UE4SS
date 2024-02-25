@@ -13,7 +13,7 @@ set(${TARGET}_Sources
 
 if (WIN32)
     list(APPEND ${TARGET}_Sources
-            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Win32APIInputSource.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Win32AsyncInputSource.cpp"
             )
 else()
     if (UE4SS_USE_TUI_ON_LINUX)
