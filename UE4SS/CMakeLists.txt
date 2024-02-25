@@ -131,15 +131,15 @@ if (WIN32)
     list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Win32}
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryWin32.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CrashDumper.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Mod/CppMod.cpp")
+    )
     # set c definition HAS_GUI
     add_compile_definitions(HAS_GUI)
     add_compile_definitions(HAS_INPUT)
-    add_compile_definitions(HAS_CPPMOD)
 else()
     if (UE4SS_USE_TUI_ON_LINUX)
         list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Linux})
         add_compile_definitions(HAS_GUI)
+        add_compile_definitions(HAS_INPUT)
     endif()
     list(APPEND ${TARGET}_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryLinux.cpp")
@@ -200,7 +200,7 @@ else()
     target_link_libraries(${TARGET} PUBLIC
         patternsleuth_bind PolyHook_2 dl)
     if (UE4SS_USE_TUI_ON_LINUX)
-        target_link_libraries(${TARGET} PUBLIC imtui imtui-ncurses ImGuiText)
+        target_link_libraries(${TARGET} PUBLIC imtui imtui-ncurses ImGuiText Input)
     endif()
     # add pthread?
     set(THREADS_PREFER_PTHREAD_FLAG ON)
