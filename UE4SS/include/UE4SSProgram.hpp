@@ -90,7 +90,7 @@ namespace RC
 
       protected:
 #ifdef HAS_INPUT
-        Input::Handler m_input_handler{SYSSTR("ConsoleWindowClass"), SYSSTR("UnrealWindow")};
+        Input::Handler m_input_handler;
 #endif
         std::jthread m_event_loop;
 #ifdef HAS_GUI
@@ -217,6 +217,12 @@ namespace RC
         RC_UE4SS_API auto generate_uht_compatible_headers() -> void;
         RC_UE4SS_API auto generate_cxx_headers(const std::filesystem::path& output_dir) -> void;
         RC_UE4SS_API auto generate_lua_types(const std::filesystem::path& output_dir) -> void;
+#ifdef HAS_INPUT
+        auto get_input_handler() -> Input::Handler&
+        {
+            return m_input_handler;
+        }
+#endif
 #ifdef HAS_GUI
         auto get_debugging_ui() -> GUI::DebuggingGUI&
         {
