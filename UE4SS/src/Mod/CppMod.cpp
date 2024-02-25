@@ -43,7 +43,10 @@ namespace RC
         m_main_dll_module = LoadLibraryW(dll_path.c_str());
         if (!m_main_dll_module)
         {
-            Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, error code: 0x{:x}\n"), to_system_string(dll_path), m_mod_name, GetLastError());
+            Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, error code: 0x{:x}\n"),
+                                            to_system_string(dll_path),
+                                            m_mod_name,
+                                            GetLastError());
             set_installable(false);
             return;
         }
@@ -194,18 +197,18 @@ namespace RC
 
     CppMod::~CppMod()
     {
-        #ifdef WIN32
+#ifdef WIN32
         if (m_main_dll_module)
         {
             FreeLibrary(m_main_dll_module);
             RemoveDllDirectory(m_dlls_path_cookie);
         }
-        #else
+#else
         if (m_dl_handle)
         {
             dlclose(m_dl_handle);
             m_dl_handle = NULL;
         }
-        #endif
+#endif
     }
 } // namespace RC

@@ -30,9 +30,9 @@ namespace RC
     class CppUserModBase
     {
       protected:
-      #ifdef HAS_GUI
+#ifdef HAS_GUI
         std::vector<std::shared_ptr<GUI::GUITab>> GUITabs{};
-      #endif
+#endif
       public:
         UEStringType ModName{};
         UEStringType ModVersion{};
