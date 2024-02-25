@@ -29,9 +29,7 @@
 #include <LuaLibrary.hpp>
 #include <LuaType/LuaCustomProperty.hpp>
 #include <LuaType/LuaUObject.hpp>
-#ifdef HAS_CPPMOD
 #include <Mod/CppMod.hpp>
-#endif
 #include <Mod/LuaMod.hpp>
 #include <Mod/Mod.hpp>
 #include <ObjectDumper/ObjectToString.hpp>
@@ -1112,9 +1110,7 @@ namespace RC
 
     auto UE4SSProgram::install_cpp_mods() -> void
     {
-        #ifdef HAS_CPPMOD
         install_mods<CppMod>(get_program().m_mods);
-        #endif 
     }
 
     auto UE4SSProgram::install_lua_mods() -> void
@@ -1127,13 +1123,11 @@ namespace RC
         ProfilerScope();
         for (const auto& mod : m_mods)
         {
-            #ifdef HAS_CPPMOD
             if (!dynamic_cast<CppMod*>(mod.get()))
             {
                 continue;
             }
             mod->fire_unreal_init();
-            #endif
         }
     }
 
@@ -1142,13 +1136,11 @@ namespace RC
         ProfilerScope();
         for (const auto& mod : m_mods)
         {
-            #ifdef HAS_CPPMOD
             if (!dynamic_cast<CppMod*>(mod.get()))
             {
                 continue;
             }
             mod->fire_program_start();
-            #endif
         }
     }
 
@@ -1156,12 +1148,10 @@ namespace RC
     {
         for (const auto& mod : m_mods)
         {
-            #ifdef HAS_CPPMOD
             if (auto cpp_mod = dynamic_cast<CppMod*>(mod.get()); cpp_mod)
             {
                 cpp_mod->fire_dll_load(dll_name);
             }
-            #endif
         }
     }
 
@@ -1282,33 +1272,27 @@ namespace RC
 
     auto UE4SSProgram::start_cpp_mods() -> void
     {
-        #ifdef HAS_CPPMOD
         ProfilerScope();
         auto error_message = start_mods<CppMod>();
         if (!error_message.empty())
         {
             set_error(error_message.c_str());
         }
-        #endif
     }
 
     auto UE4SSProgram::uninstall_mods() -> void
     {
         ProfilerScope();
         
-#ifdef HAS_CPPMOD
         std::vector<CppMod*> cpp_mods{};
-#endif
         std::vector<LuaMod*> lua_mods{};
         for (auto& mod : m_mods)
         {
-#ifdef HAS_CPPMOD
             if (auto cpp_mod = dynamic_cast<CppMod*>(mod.get()); cpp_mod)
             {
                 cpp_mods.emplace_back(cpp_mod);
             }
             else 
-#endif
             if (auto lua_mod = dynamic_cast<LuaMod*>(mod.get()); lua_mod)
             {
                 lua_mods.emplace_back(lua_mod);
@@ -1321,12 +1305,10 @@ namespace RC
             mod->uninstall();
         }
 
-#ifdef HAS_CPPMOD
         for (auto& mod : cpp_mods)
         {
             mod->uninstall();
         }
-#endif
         m_mods.clear();
         LuaMod::global_uninstall();
     }
