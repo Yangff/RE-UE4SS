@@ -10,7 +10,7 @@
 #include <Helpers/String.hpp>
 #include <imgui.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(HAS_GLFW)
 #define XOFFSET (-14.0f)
 #define XDIV 1
 #define YDIV 1
@@ -23,10 +23,12 @@
 #endif
 
 #ifdef LINUX
+#ifndef HAS_GLFW
 namespace ImGui {
     static void BeginDisabled(bool disabled = true) {}
     static void EndDisabled() {}
 }
+#endif
 #endif
 
 namespace RC::GUI
@@ -37,8 +39,8 @@ namespace RC::GUI
     {
 #ifdef WIN32
         DX11,
-        GLFW3_OpenGL3,
 #endif
+        GLFW3_OpenGL3,
 #ifdef LINUX
         TUI
 #endif

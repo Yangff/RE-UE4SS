@@ -27,6 +27,7 @@ message("IPO - Supported: ${supported}; ${error}")
 option(MAKE_DEPENDENCIES_SHARED "Make dependencies shared" OFF)
 option(UE4SS_CONSOLE_COLORS_ENABLED "Enable console colors" OFF)
 option(UE4SS_USE_TUI_ON_LINUX "Use TUI on Linux" ON)
+option(UE4SS_USE_GLFW_ON_LINUX "Use GLFW on Linux" OFF)
 # Settings -> END
 
 # Projects -> START

@@ -3,7 +3,7 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
 # Third Party Dependencies -> START
-if (WIN32)
+if (WIN32 OR UE4SS_USE_GLFW_ON_LINUX)
 add_subdirectory("GLFW")
 endif()
 
@@ -18,7 +18,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glaze)
 # glaze JSON library end
 
-if (WIN32)
+if (WIN32 OR UE4SS_USE_GLFW_ON_LINUX)
 # ImGui start
 FetchContent_Declare(ImGui
     GIT_REPOSITORY git@github.com:ocornut/imgui.git

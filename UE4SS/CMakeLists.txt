@@ -74,8 +74,12 @@ set(GUI_Sources_Win32
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/Windows.cpp"
 )
 
-set(GUI_Sources_Linux
+set(GUI_Sources_LinuxTUI
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/TUI.cpp"
+)
+
+set(GUI_Sources_LinuxGLFW3
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GUI/GLFW3_OpenGL3.cpp"
 )
 
 set(${TARGET}_Sources
@@ -138,9 +142,14 @@ if (WIN32)
     add_compile_definitions(HAS_INPUT)
 else()
     if (UE4SS_USE_TUI_ON_LINUX)
-        list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_Linux})
+        list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_LinuxTUI})
         add_compile_definitions(HAS_GUI)
         add_compile_definitions(HAS_INPUT)
+    endif()
+    if (UE4SS_USE_GLFW_ON_LINUX)
+        list(APPEND ${TARGET}_Sources ${GUI_Sources} ${GUI_Sources_LinuxGLFW3})
+        add_compile_definitions(HAS_GUI)
+        # add_compile_definitions(HAS_INPUT)
     endif()
     list(APPEND ${TARGET}_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EntryLinux.cpp")
@@ -202,6 +211,10 @@ else()
         patternsleuth_bind PolyHook_2 dl)
     if (UE4SS_USE_TUI_ON_LINUX)
         target_link_libraries(${TARGET} PUBLIC imtui imtui-ncurses ImGuiText Input)
+    endif()
+    if (UE4SS_USE_GLFW_ON_LINUX)
+        target_link_libraries(${TARGET} PUBLIC ImGui GLFW)
+        add_compile_definitions(HAS_GLFW)
     endif()
     # add pthread?
     set(THREADS_PREFER_PTHREAD_FLAG ON)
