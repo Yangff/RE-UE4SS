@@ -1345,6 +1345,11 @@ namespace RC
                 std::erase_if(vector_of_key_data, [&](Input::KeyData& key_data) -> bool {
                     return key_data.custom_data == 1;
                 });
+
+                if (vector_of_key_data.empty())
+				{
+                    m_input_handler.clear_subscribed_key(key);
+				}
             }
         });
 #endif
