@@ -124,6 +124,8 @@ set(${TARGET}_Sources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SDKGenerator/JSONDumper.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SDKGenerator/TMapOverrideGen.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/USMapGenerator/Generator.cpp"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Mod/CppMod.cpp"
 )
 
 if (WIN32)
