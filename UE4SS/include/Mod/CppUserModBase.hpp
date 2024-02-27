@@ -5,7 +5,7 @@
 
 #include <Common.hpp>
 #include <File/Macros.hpp>
-#ifdef HAS_GUI
+#ifdef HAS_UI
 #include <GUI/GUITab.hpp>
 #endif
 
@@ -30,7 +30,7 @@ namespace RC
     class CppUserModBase
     {
       protected:
-#ifdef HAS_GUI
+#ifdef HAS_UI
         std::vector<std::shared_ptr<GUI::GUITab>> GUITabs{};
 #endif
       public:
@@ -125,7 +125,7 @@ namespace RC
         {
         }
 
-#ifdef HAS_GUI
+#ifdef HAS_UI
         RC_UE4SS_API virtual auto render_tab() -> void{};
 
       protected:
