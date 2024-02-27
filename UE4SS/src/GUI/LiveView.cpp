@@ -49,9 +49,9 @@
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
 
-#if defined(WIN32) || defined(HAS_GLFW)
+#ifdef HAS_GUI
 #include <IconsFontAwesome5.h>
-#else
+#elif defined(HAS_TUI)
 #include <GUI/NerdFont.hpp>
 #endif
 
@@ -3109,7 +3109,7 @@ namespace RC::GUI
             ImGui::SetClipboardText(to_string(result).c_str());
         }
 
-#if defined(WIN32) || defined(HAS_GLFW)
+#ifdef HAS_GUI
         m_bottom_size = (ImGui::GetContentRegionMaxAbs().y - m_top_size) - 94.0f;
         ImGui_Splitter(false, 4.0f, &m_top_size, &m_bottom_size, 32.0f, 32.0f, -14.0f);
 #else
@@ -3118,11 +3118,12 @@ namespace RC::GUI
 #endif
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{0.156f, 0.156f, 0.156f, 1.0f});
 
-#if defined(WIN32) || defined(HAS_GLFW)
+#ifdef HAS_GUI
         ImGui::BeginChild("LiveView_TreeView", {-14.0f, m_top_size}, true);
 #else
         ImGui::BeginChild("LiveView_TreeView", {0, m_top_size}, true);
 #endif
+
         auto do_iteration = [&](int32_t int_data_1 = 0, int32_t int_data_2 = 0) {
             ((*this).*((*this).m_object_iterator))(int_data_1, int_data_2, [&](UObject* object) {
                 auto tree_node_name = std::string{get_object_full_name(object)};
@@ -3269,7 +3270,7 @@ namespace RC::GUI
         }
 
         static int num_columns = 3;
-#if defined(WIN32) || defined(HAS_GLFW)
+#ifdef HAS_GUI
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {2.0f, 2.0f});
 #endif
         if (ImGui::BeginTable("watch_table", num_columns, ImGuiTableFlags_Borders | ImGuiTableFlags_NoPadOuterX))
@@ -3363,7 +3364,7 @@ namespace RC::GUI
             }
 
             ImGui::EndTable();
-#if defined(WIN32) || defined(HAS_GLFW)
+#ifdef HAS_GUI
             ImGui::PopStyleVar();
 #endif
         }
