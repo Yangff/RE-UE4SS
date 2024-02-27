@@ -15,6 +15,7 @@ if (WIN32)
     list(APPEND ${TARGET}_Sources
             "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Win32AsyncInputSource.cpp"
             )
+    add_compile_definitions(HAS_GLFW)
 else()
     if (UE4SS_USE_TUI_ON_LINUX OR UE4SS_USE_GLFW_ON_LINUX)
         list(APPEND ${TARGET}_Sources
@@ -22,6 +23,12 @@ else()
            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/NcursesInputSource.cpp"
            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/GLFW3InputSource.cpp"
         )
+        if (UE4SS_USE_TUI_ON_LINUX)
+            add_compile_definitions(HAS_TUI)
+        endif()
+        if (UE4SS_USE_GLFW_ON_LINUX)
+            add_compile_definitions(HAS_GLFW)
+        endif()
     else()
         # error message 
         message(FATAL_ERROR "Unsupported platform")
