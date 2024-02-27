@@ -16,10 +16,11 @@ if (WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Win32AsyncInputSource.cpp"
             )
 else()
-    if (UE4SS_USE_TUI_ON_LINUX)
+    if (UE4SS_USE_TUI_ON_LINUX OR UE4SS_USE_GLFW_ON_LINUX)
         list(APPEND ${TARGET}_Sources
            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/QueneInputSource.cpp"
            "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/NcursesInputSource.cpp"
+           "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/GLFW3InputSource.cpp"
         )
     else()
         # error message 
