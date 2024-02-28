@@ -6,7 +6,7 @@
 
 namespace RC::LuaType
 {
-    FString::FString(Unreal::FString* object) : RemoteObjectBase<Unreal::FString, FStringName>(object)
+    FString::FString(Unreal::FString* object) : LocalObjectBase<Unreal::FString, FStringName>(std::move(*object))
     {
     }
 
@@ -52,9 +52,9 @@ namespace RC::LuaType
     auto FString::setup_member_functions(const LuaMadeSimple::Lua::Table& table) -> void
     {
         table.add_pair("ToString", [](const LuaMadeSimple::Lua& lua) -> int {
-            const auto& lua_object = lua.get_userdata<LuaType::FString>();
+            auto& lua_object = lua.get_userdata<LuaType::FString>();
 
-            const UECharType* string_data = lua_object.get_remote_cpp_object()->GetCharArray();
+            const UECharType* string_data = lua_object.get_local_cpp_object().GetCharArray();
             if (string_data)
             {
                 lua.set_string(to_string(UEStringType(string_data)));
@@ -68,9 +68,9 @@ namespace RC::LuaType
         });
 
         table.add_pair("Clear", [](const LuaMadeSimple::Lua& lua) -> int {
-            const auto& lua_object = lua.get_userdata<LuaType::FString>();
+            auto& lua_object = lua.get_userdata<LuaType::FString>();
 
-            lua_object.get_remote_cpp_object()->Clear();
+            lua_object.get_local_cpp_object().Clear();
 
             return 0;
         });
