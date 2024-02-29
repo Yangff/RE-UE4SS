@@ -880,7 +880,7 @@ Overloads:
             // Ignores any params after P1
             if (lua.is_string())
             {
-                Unreal::UObject* object = Unreal::UObjectGlobals::StaticFindObject(nullptr, nullptr, to_ue(to_system(lua.get_string())));
+                Unreal::UObject* object = Unreal::UObjectGlobals::StaticFindObject(nullptr, nullptr, to_ue_string(lua.get_string()));
 
                 // Construct a Lua object of type 'UObject'
                 // Auto constructing is nullptr safe
@@ -982,7 +982,7 @@ Overloads:
             // Ignores any params after P1
             if (lua.is_string())
             {
-                Unreal::UObject* object = Unreal::UObjectGlobals::FindFirstOf(to_ue(to_system(lua.get_string())));
+                Unreal::UObject* object = Unreal::UObjectGlobals::FindFirstOf(to_ue_string(lua.get_string()));
 
                 // Construct a Lua object of type 'UObject'
                 // Auto constructing is nullptr safe
