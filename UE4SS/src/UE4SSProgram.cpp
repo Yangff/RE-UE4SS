@@ -1344,7 +1344,17 @@ namespace RC
             for (auto& [key, vector_of_key_data] : input_event.key_data)
             {
                 std::erase_if(vector_of_key_data, [&](Input::KeyData& key_data) -> bool {
-                    return key_data.custom_data == 1;
+                    // custom_data == 1: Bind came from Lua, and custom_data2 is nullptr.
+                    // custom_data == 2: Bind came from C++, and custom_data2 is a pointer to KeyDownEventData. Must free it.
+                    if (key_data.custom_data == 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        were_all_events_registered_from_lua = false;
+                        return false;
+                    }
                 });
 
                 if (vector_of_key_data.empty())
@@ -1520,17 +1530,18 @@ namespace RC
         return m_queued_events.empty();
     }
 #ifdef HAS_INPUT
-    auto UE4SSProgram::register_keydown_event(Input::Key key, const Input::EventCallbackCallable& callback, uint8_t custom_data) -> void
+    auto UE4SSProgram::register_keydown_event(Input::Key key, const Input::EventCallbackCallable& callback, uint8_t custom_data, void* custom_data2) -> void
     {
-        m_input_handler.register_keydown_event(key, callback, custom_data);
+        m_input_handler.register_keydown_event(key, callback, custom_data, custom_data2);
     }
 
     auto UE4SSProgram::register_keydown_event(Input::Key key,
                                               const Input::Handler::ModifierKeyArray& modifier_keys,
                                               const Input::EventCallbackCallable& callback,
-                                              uint8_t custom_data) -> void
+                                              uint8_t custom_data,
+                                              void* custom_data2) -> void
     {
-        m_input_handler.register_keydown_event(key, modifier_keys, callback, custom_data);
+        m_input_handler.register_keydown_event(key, modifier_keys, callback, custom_data, custom_data2);
     }
 
     auto UE4SSProgram::is_keydown_event_registered(Input::Key key) -> bool

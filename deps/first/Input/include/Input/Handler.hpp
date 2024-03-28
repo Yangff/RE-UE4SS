@@ -29,6 +29,9 @@ namespace RC::Input
         ModifierKeys required_modifier_keys{};
         EventCallbackCallable callback{};
         uint8_t custom_data{};
+        void* custom_data2{};
+        bool requires_modifier_keys{};
+        bool is_down{};
     };
 
     struct KeySet
@@ -60,10 +63,11 @@ namespace RC::Input
       public:
         auto init() -> void;
 
-        auto register_keydown_event(Input::Key, EventCallbackCallable, uint8_t custom_data = 0) -> void;
+        auto register_keydown_event(Input::Key, EventCallbackCallable, uint8_t custom_data = 0, void* custom_data2 = nullptr) -> void;
 
         using ModifierKeyArray = std::array<Input::ModifierKey, max_modifier_keys>;
-        auto register_keydown_event(Input::Key, const ModifierKeyArray&, const EventCallbackCallable&, uint8_t custom_data = 0) -> void;
+        auto register_keydown_event(Input::Key, const ModifierKeyArray&, const EventCallbackCallable&, uint8_t custom_data = 0, void* custom_data2 = nullptr)
+                -> void;
 
         auto is_keydown_event_registered(Input::Key) -> bool;
         auto is_keydown_event_registered(Input::Key, const ModifierKeyArray&) -> bool;

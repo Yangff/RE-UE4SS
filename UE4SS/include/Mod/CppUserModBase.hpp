@@ -8,6 +8,7 @@
 #ifdef HAS_UI
 #include <GUI/GUITab.hpp>
 #endif
+#include <Input/Handler.hpp>
 
 namespace RC
 {
@@ -131,5 +132,8 @@ namespace RC
       protected:
         RC_UE4SS_API auto register_tab(UEStringViewType tab_name, GUI::GUITab::RenderFunctionType) -> void;
 #endif
+        RC_UE4SS_API auto register_keydown_event(Input::Key, const Input::EventCallbackCallable&, uint8_t custom_data = 0) -> void;
+        RC_UE4SS_API auto register_keydown_event(Input::Key, const Input::Handler::ModifierKeyArray&, const Input::EventCallbackCallable&, uint8_t custom_data = 0)
+                -> void;
     };
 } // namespace RC
