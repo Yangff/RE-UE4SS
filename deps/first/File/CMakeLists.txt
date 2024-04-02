@@ -13,7 +13,7 @@ if (WIN32)
     list(APPEND ${TARGET}_Sources
             "${CMAKE_CURRENT_SOURCE_DIR}/src/FileType/WinFile.cpp"
             )
-elseif (LINUX)
+elseif (UNIX)
     list(APPEND ${TARGET}_Sources
             "${CMAKE_CURRENT_SOURCE_DIR}/src/FileType/StdFile.cpp"
             )

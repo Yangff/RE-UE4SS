@@ -75,7 +75,7 @@ add_subdirectory("raw_pdb")
 # raw_pdb end
 endif()
 
-if (LINUX)
+if (UNIX)
 # imtui start
 FetchContent_Declare(imtui
     GIT_REPOSITORY https://github.com/ggerganov/imtui.git
