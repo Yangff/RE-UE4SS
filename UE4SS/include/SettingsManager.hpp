@@ -110,7 +110,7 @@ namespace RC
             bool GUIUFunctionCaller{false};
         } Experimental;
 
-#ifdef LINUX
+#ifdef __linux__
         struct TUIFeatures
         {
             /*int ButtonLeft = 1;

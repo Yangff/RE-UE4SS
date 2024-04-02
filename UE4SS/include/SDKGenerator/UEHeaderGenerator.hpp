@@ -95,7 +95,7 @@ namespace RC::UEGenerator
     {
         auto operator()(const SystemStringType& a, const SystemStringType& b) const -> bool
         {
-#ifdef LINUX
+#ifdef __linux__
             // Create a case insensitive string compare for Linux
             return strcasecmp(a.c_str(), b.c_str()) < 0;
 #else

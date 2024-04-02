@@ -6,7 +6,7 @@
 #include <Helpers/String.hpp>
 #include <Mod/CppMod.hpp>
 
-#ifdef LINUX
+#ifdef __linux__
 #define printf_s printf
 #define _GNU_SOURCE
 #include <dlfcn.h>

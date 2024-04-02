@@ -5,7 +5,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 
-#ifdef LINUX
+#ifdef __linux__
 #define fopen_s(pFile, filename, mode) ((*(pFile)) = fopen((filename), (mode))) == NULL
 #endif
 

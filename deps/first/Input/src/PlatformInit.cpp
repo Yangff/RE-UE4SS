@@ -10,7 +10,7 @@ namespace RC::Input
 #ifdef WIN32
         register_input_source(std::make_shared<Win32AsyncInputSource>(L"ConsoleWindowClass", L"UnrealWindow"));
 #endif
-#ifdef LINUX
+#ifdef __linux__
 #ifdef HAS_TUI
         register_input_source(std::make_shared<NcursesInputSource>());
 #endif

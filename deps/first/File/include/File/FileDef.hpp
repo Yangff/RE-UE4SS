@@ -12,7 +12,7 @@ namespace RC::File
 
 #else
 
-#ifdef LINUX
+#ifdef __linux__
 #define RC_DETECTED_OS LINUX
 #else
     static_assert(false, "Could not setup the 'Handle' typedef because a supported OS was not detected.");
@@ -21,7 +21,7 @@ namespace RC::File
 #endif
 #endif
 
-#if RC_DETECTED_OS == LINUX
+#if RC_DETECTED_OS == __linux__
 #ifndef RC_OS_FILE_TYPE_INCLUDE_FILE
 #define RC_OS_FILE_TYPE_INCLUDE_FILE <File/FileType/StdFile.hpp>
 #else

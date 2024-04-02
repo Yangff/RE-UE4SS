@@ -9,7 +9,7 @@
 
 #include <Input/Handler.hpp>
 
-#ifdef LINUX
+#ifdef __linux__
 #include <Input/Platform/GLFW3InputSource.hpp>
 #endif
 
@@ -20,7 +20,7 @@ namespace RC::GUI
         Output::send<LogLevel::Error>(SYSSTR("Glfw Error {}: {}\n"), error, description);
     }
 
-#ifdef LINUX
+#ifdef __linux__
     static std::shared_ptr<Input::GLFW3InputSource> g_input_source;
 #endif
 
@@ -48,7 +48,7 @@ namespace RC::GUI
         glfwMakeContextCurrent(m_window);
         glfwSwapInterval(1); // Enable vsync
 
-#ifdef LINUX
+#ifdef __linux__
         if (auto source = Input::Handler::get_input_source("GLFW3"))
         {
             g_input_source = std::dynamic_pointer_cast<Input::GLFW3InputSource>(source);
@@ -99,7 +99,7 @@ namespace RC::GUI
         glfwDestroyWindow(m_window);
         m_window = nullptr;
 
-#ifdef LINUX
+#ifdef __linux__
         g_input_source = nullptr;
 #endif
     }

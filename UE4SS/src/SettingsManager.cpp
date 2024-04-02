@@ -138,7 +138,7 @@ namespace RC
         constexpr static SystemCharType section_experimental_features[] = SYSSTR("ExperimentalFeatures");
         REGISTER_BOOL_SETTING(Experimental.GUIUFunctionCaller, section_experimental_features, GUIUFunctionCaller)
 
-#ifdef LINUX
+#ifdef __linux__
         constexpr static SystemCharType section_tui_features[] = SYSSTR("TUI");
         /*REGISTER_INT64_SETTING(TUI.ButtonLeft, section_tui_features, ButtonLeft)
         REGISTER_INT64_SETTING(TUI.ButtonRight, section_tui_features, ButtonRight)

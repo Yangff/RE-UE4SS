@@ -344,7 +344,7 @@ namespace RC::GUI::Dumpers
 
 // this give the button a little bit of space between the top of the window
 // and the buttons themselves
-#ifdef LINUX
+#ifdef __linux__
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0.0f, 1.0f});
         ImGui::Spacing();
 #endif
@@ -413,7 +413,7 @@ namespace RC::GUI::Dumpers
             UE4SSProgram::get_program().generate_lua_types(working_dir / SYSSTR("Mods") / SYSSTR("shared") SYSSTR("types"));
         }
 
-#ifdef LINUX
+#ifdef __linux__
         ImGui::PopStyleVar();
 #endif
     }

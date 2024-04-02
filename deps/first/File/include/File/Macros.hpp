@@ -9,7 +9,7 @@
 #define RC_IS_ANSI 0
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
 #define SYSSTR(str) str
 #define IOSTR(str) str
 #define STR(str) u##str

@@ -64,7 +64,7 @@ namespace RC::GUI
 #ifdef WIN32
         Windows,
 #endif
-#ifdef LINUX
+#ifdef __linux__
         TUI,
 #endif
     };

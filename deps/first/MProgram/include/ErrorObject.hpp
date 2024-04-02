@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstring>
 
-#ifdef LINUX
+#ifdef __linux__
 #define sprintf_s snprintf
 #define strncpy_s(dest, destsz, src, count) strncpy((dest), (src), (((count) < (destsz)) ? (count) : (destsz)))
 #endif
