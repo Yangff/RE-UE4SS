@@ -11,7 +11,7 @@ target(projectName)
 
     add_files("src/**.cpp")
     
-    add_deps("File")
+    add_deps("File", "Helpers")
 
     on_load(function (target)
         import("target_helpers", { rootdir = get_config("scriptsRoot") })
