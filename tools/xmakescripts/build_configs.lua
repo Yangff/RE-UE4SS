@@ -58,7 +58,25 @@ PLATFORM_TYPES = {
             "OVERRIDE_PLATFORM_HEADER_NAME=Windows",
             "UBT_COMPILED_PLATFORM=Win64",
             "UNICODE",
-            "_UNICODE"
+            "_UNICODE",
+            "DLLEXT=.dll"
+        },
+        ["cxflags"] = {
+            "clang_cl::-gcodeview"
+        }
+    },
+    ["Linux"] = {
+        ["defines"] = {
+            "PLATFORM_LINUX",
+            "PLATFORM_UNIX",
+            "LINUX",
+            "OVERRIDE_PLATFORM_HEADER_NAME=Linux",
+            "UBT_COMPILED_PLATFORM=Linux",
+            "printf_s=printf",
+            "DLLEXT=.so"
+        },
+        ["cxflags"] = {
+            "clang::-fno-delete-null-pointer-checks"
         }
     }
 }
@@ -66,7 +84,6 @@ PLATFORM_TYPES = {
 CLANG_COMPILE_OPTIONS = {
     ["cxflags"] = {
         "-g",
-        "-gcodeview",
         "-fcolor-diagnostics",
         "-Wno-unknown-pragmas",
         "-Wno-unused-parameter",
@@ -284,7 +301,11 @@ end
 -- Get runtime for current mode
 function get_mode_runtimes()
     local is_debug = is_mode_debug()
-    return is_debug and "MDd" or "MD"
+    if is_plat("windows") then
+        return is_debug and "MDd" or "MD"
+    end
+    -- we don't care about runtime on linux
+    return ""
 end
 
 -- return module: build_configs
