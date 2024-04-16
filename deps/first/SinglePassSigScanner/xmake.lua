@@ -8,9 +8,20 @@ target(projectName)
 
     add_includedirs("include", { public = true })
     add_headerfiles("include/**.hpp")
+    remove_headerfiles("include/SigScanner/SinglePassSigScanner*?.hpp")
 
     add_files("src/**.cpp")
+    remove_files("src/SinglePassSigScannerWin32.cpp")
+    remove_files("src/SinglePassSigScannerLinux.cpp")
     
+    if is_plat("windows") then
+        add_headerfiles("include/SigScanner/SinglePassSigScannerWin32.hpp")
+        add_files("src/SinglePassSigScannerWin32.cpp")
+    elseif is_plat("linux") then
+        add_headerfiles("include/SigScanner/SinglePassSigScannerLinux.hpp")
+        add_files("src/SinglePassSigScannerLinux.cpp")
+    end
+
     add_deps("Profiler")
 
     on_load(function (target)
