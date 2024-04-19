@@ -24,6 +24,8 @@ namespace RC::JSON::Parser
             tc.add(ParserBase::Token::create(TokenType::OpeningSquareBracket, SYSSTR("OpeningSquareBracket"), SYSSTR("[")));
             tc.add(ParserBase::Token::create(TokenType::Comma, SYSSTR("Comma"), SYSSTR(",")));
             tc.add(ParserBase::Token::create(TokenType::Colon, SYSSTR("Colon"), SYSSTR(":")));
+            tc.add(ParserBase::Token::create(TokenType::True, SYSSTR("True"), SYSSTR("true")));
+            tc.add(ParserBase::Token::create(TokenType::False, SYSSTR("False"), SYSSTR("false")));
 
             tc.set_eof_token(TokenType::EndOfFile);
 
