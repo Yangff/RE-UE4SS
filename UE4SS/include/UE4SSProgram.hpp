@@ -33,7 +33,13 @@
 
 // Used to set up ImGui context and allocator in DLL mods
 #define UE4SS_ENABLE_IMGUI()                                                                                                                                   \
+    /* Wait for UE4SS to create the imgui context. */                                                                                                          \
+    /* Without this, we're setting the context to nullptr and eventually crashing when we use any imgui functions. */                                          \
     {                                                                                                                                                          \
+        while ((UE4SSProgram::settings_manager.Debug.DebugConsoleVisible || UE4SSProgram::get_program().m_render_thread.get_id() != std::jthread::id{}) &&     \
+               !UE4SSProgram::get_program().get_current_imgui_context())                                                                                       \
+        {                                                                                                                                                      \
+        }                                                                                                                                                      \
         ImGui::SetCurrentContext(UE4SSProgram::get_current_imgui_context());                                                                                   \
         ImGuiMemAllocFunc alloc_func{};                                                                                                                        \
         ImGuiMemFreeFunc free_func{};                                                                                                                          \
@@ -103,6 +109,7 @@ namespace RC
 #endif
         std::jthread m_event_loop;
 #ifdef HAS_UI
+      public:
         std::jthread m_render_thread;
 #endif
       private:
@@ -206,11 +213,17 @@ namespace RC
       protected:
         auto update() -> void;
         auto setup_cpp_mods() -> void;
-        auto start_cpp_mods() -> void;
+        enum class IsInitialStartup
+        {
+            Yes,
+            No
+        };
+        auto start_cpp_mods(IsInitialStartup = IsInitialStartup::No) -> void;
         auto setup_mods() -> void;
         auto start_lua_mods() -> void;
         auto uninstall_mods() -> void;
         auto fire_unreal_init_for_cpp_mods() -> void;
+        auto fire_ui_init_for_cpp_mods() -> void;
         auto fire_program_start_for_cpp_mods() -> void;
         auto fire_dll_load_for_cpp_mods(SystemStringViewType dll_name) -> void;
 
