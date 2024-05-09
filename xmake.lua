@@ -61,6 +61,10 @@ if is_plat("windows") then
     set_defaultmode("Game__Shipping__Win64")
 end
 
+-- Override the `xmake install` behavior for all targets.
+-- Targets can re-override the on_install() function to implement custom installation behavior.
+on_install(function(target) end)
+
 includes("deps")
 includes("UE4SS")
 
