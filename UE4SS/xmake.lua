@@ -63,7 +63,6 @@ target(projectName)
     set_default(true)
     add_rules("ue4ss.defines.exports")
     add_options("ue4ssBetaIsStarted", "ue4ssIsBeta")
-
     add_includedirs("include", { public = true })
     add_includedirs("generated_include", { public = true })
     add_headerfiles("include/**.hpp")
