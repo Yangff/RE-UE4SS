@@ -1,3 +1,5 @@
+-- TODO: This file should be deleted before the next release?
+-- It helps people with old mod templates upgrade to the new template.
 local build_configs = build_configs or {}
 
 -- The target/config/platform tables map unreal modes (Game__Shipping__Win64, etc.) to build settings.
@@ -202,11 +204,12 @@ rule("ue4ss.mode.base")
         mode_builder.apply_compiler_options(target, MSVC_COMPILE_OPTIONS, { "clang_cl", "cl", "link" })
     end)
 function _warn_mod_template_outdated(target)
-    raise("Your mod's xmake.lua file needs updating.")
+    print("SUGGESTED TEMPLATE:")
     print(format('target("%s")', target:name()))
     print('    add_rules("ue4ss.mod")')
     print('    add_includedirs(".")')
     print('    add_files("*.cpp")')
+    raise("Your mod's xmake.lua file needs updating.")
 end
 
 function _warn_unreal_submod_outdated()
