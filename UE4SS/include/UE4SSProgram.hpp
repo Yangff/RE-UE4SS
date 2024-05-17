@@ -33,7 +33,13 @@
 
 // Used to set up ImGui context and allocator in DLL mods
 #define UE4SS_ENABLE_IMGUI()                                                                                                                                   \
+    /* Wait for UE4SS to create the imgui context. */                                                                                                          \
+    /* Without this, we're setting the context to nullptr and eventually crashing when we use any imgui functions. */                                          \
     {                                                                                                                                                          \
+        while ((UE4SSProgram::settings_manager.Debug.DebugConsoleVisible || UE4SSProgram::get_program().m_render_thread.get_id() != std::jthread::id{}) &&     \
+               !UE4SSProgram::get_program().get_current_imgui_context())                                                                                       \
+        {                                                                                                                                                      \
+        }                                                                                                                                                      \
         ImGui::SetCurrentContext(UE4SSProgram::get_current_imgui_context());                                                                                   \
         ImGuiMemAllocFunc alloc_func{};                                                                                                                        \
         ImGuiMemFreeFunc free_func{};                                                                                                                          \
@@ -72,9 +78,21 @@ namespace RC
         uint64_t safety_padding[8]{0};
     };
 
+    struct KeyDownEventData
+    {
+        // Custom data from the C++ mod.
+        // The 'custom_data' variable to UE4SSProgram::register_keydown_event will be used to determine the type of custom_data2.
+        uint8_t custom_data{};
+
+        // The C++ mod that created this event.
+        CppUserModBase* mod{};
+    };
+
     class UE4SSProgram : public MProgram
     {
       public:
+        friend class CppUserModBase; // m_input_handler
+        
         constexpr static SystemCharType m_settings_file_name[] = SYSSTR("UE4SS-settings.ini");
         constexpr static SystemCharType m_log_file_name[] = SYSSTR("UE4SS.log");
         constexpr static SystemCharType m_object_dumper_file_name[] = SYSSTR("UE4SS_ObjectDump.txt");
@@ -195,11 +213,17 @@ namespace RC
       protected:
         auto update() -> void;
         auto setup_cpp_mods() -> void;
-        auto start_cpp_mods() -> void;
+        enum class IsInitialStartup
+        {
+            Yes,
+            No
+        };
+        auto start_cpp_mods(IsInitialStartup = IsInitialStartup::No) -> void;
         auto setup_mods() -> void;
         auto start_lua_mods() -> void;
         auto uninstall_mods() -> void;
         auto fire_unreal_init_for_cpp_mods() -> void;
+        auto fire_ui_init_for_cpp_mods() -> void;
         auto fire_program_start_for_cpp_mods() -> void;
         auto fire_dll_load_for_cpp_mods(SystemStringViewType dll_name) -> void;
 
@@ -250,9 +274,13 @@ namespace RC
       public:
         // API pass-through for use outside the private scope of UE4SSProgram
 #ifdef HAS_INPUT
-        RC_UE4SS_API auto register_keydown_event(Input::Key, const Input::EventCallbackCallable&, uint8_t custom_data = 0) -> void;
-        RC_UE4SS_API auto register_keydown_event(Input::Key, const Input::Handler::ModifierKeyArray&, const Input::EventCallbackCallable&, uint8_t custom_data = 0)
-                -> void;
+        RC_UE4SS_API auto register_keydown_event(Input::Key, const Input::EventCallbackCallable&, uint8_t custom_data = 0, void* custom_data2 = nullptr) -> void;
+        RC_UE4SS_API auto register_keydown_event(Input::Key,
+                                                 const Input::Handler::ModifierKeyArray&,
+                                                 const Input::EventCallbackCallable&,
+                                                 uint8_t custom_data = 0,
+                                                 void* custom_data2 = nullptr) -> void;
+
         RC_UE4SS_API auto is_keydown_event_registered(Input::Key) -> bool;
         RC_UE4SS_API auto is_keydown_event_registered(Input::Key, const Input::Handler::ModifierKeyArray&) -> bool;
 #endif

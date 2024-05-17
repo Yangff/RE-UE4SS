@@ -43,23 +43,34 @@ namespace RC::Input
         }
     }
 
-    auto Handler::register_keydown_event(Input::Key key, EventCallbackCallable callback, uint8_t custom_data) -> void
+    auto Handler::register_keydown_event(Input::Key key, EventCallbackCallable callback, uint8_t custom_data, void* custom_data2) -> void
     {
         auto event_update_lock = std::lock_guard(m_event_mutex);
         KeyData& key_data = m_key_set.key_data[key].emplace_back();
         key_data.callback = callback;
         key_data.custom_data = custom_data;
+        key_data.custom_data2 = custom_data2;
         m_subscribed_keys[key] = true;
     }
 
-    auto Handler::register_keydown_event(Input::Key key, const ModifierKeyArray& modifier_keys, const EventCallbackCallable& callback, uint8_t custom_data) -> void
+    auto Handler::register_keydown_event(
+            Input::Key key, const ModifierKeyArray& modifier_keys, const EventCallbackCallable& callback, uint8_t custom_data, void* custom_data2) -> void
     {
         auto event_update_lock = std::lock_guard(m_event_mutex);
         KeyData& key_data = m_key_set.key_data[key].emplace_back();
         key_data.callback = callback;
         key_data.custom_data = custom_data;
+        key_data.custom_data2 = custom_data2;
         key_data.required_modifier_keys = modifier_keys;
         m_subscribed_keys[key] = true;
+
+        for (const auto& modifier_key : modifier_keys)
+        {
+            if (modifier_key != ModifierKey::MOD_KEY_START_OF_ENUM)
+            {
+                key_data.required_modifier_keys.emplace_back(modifier_key);
+            }
+        }
     }
 
     auto Handler::is_keydown_event_registered(Input::Key key) -> bool
