@@ -1302,6 +1302,8 @@ namespace RC
         {
             set_error(error_message.c_str());
         }
+
+#ifdef HAS_UI
         // If this is the initial startup, notify mods that the UI has initialized.
         // This isn't completely accurate since the UI will usually have started a while ago.
         // However, we can't immediately notify mods of this because no mods have been started at that point.
@@ -1310,6 +1312,7 @@ namespace RC
         {
             fire_ui_init_for_cpp_mods();
         }
+#endif
     }
 
     auto UE4SSProgram::uninstall_mods() -> void
