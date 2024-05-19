@@ -32,9 +32,13 @@ add_rules("ue4ss.core")
 -- Restrict the compilation modes/configs.
 -- These restrictions are inherited upstream and downstream.
 -- Any project that `includes("UE4SS")` will inherit these global restrictions.
-set_allowedplats("windows")
-set_allowedarchs("x64")
+set_allowedplats("windows", "linux")
+set_allowedarchs("x64", "x86_64")
 set_allowedmodes(modes)
+
+if is_plat("linux") then
+    set_toolchains("clang", "rust")
+end
 
 if is_plat("windows") then
     set_defaultmode("Game__Shipping__Win64")
@@ -46,8 +50,10 @@ on_install(function(target) end)
 
 includes("deps")
 includes("UE4SS")
-includes("UVTD")
+-- includes("UVTD")
 
 -- TODO: Remove this before the next release. It only exists to maintain backwards compat
 -- warnings for older mod templates.
 set_config("scriptsRoot", path.join(os.scriptdir(), "tools/xmakescripts"))
+
+add_repositories("thirdr deps/thirdr")
