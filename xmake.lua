@@ -81,5 +81,3 @@ end
 -- TODO: Remove this before the next release. It only exists to maintain backwards compat
 -- warnings for older mod templates.
 set_config("scriptsRoot", path.join(os.scriptdir(), "tools/xmakescripts"))
-
-add_repositories("thirdr deps/thirdr")
