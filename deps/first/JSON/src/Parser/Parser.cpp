@@ -18,12 +18,15 @@ namespace RC::JSON::Parser
                                              SYSSTR("Characters"),
                                              SYSSTR(""),
                                              ParserBase::Token::HasData::Yes)); // Empty identifier will match everything that no other token identifier matches
+
             tc.add(ParserBase::Token::create(TokenType::ClosingCurlyBrace, SYSSTR("ClosingCurlyBrace"), SYSSTR("}")));
             tc.add(ParserBase::Token::create(TokenType::OpeningCurlyBrace, SYSSTR("OpeningCurlyBrace"), SYSSTR("{")));
             tc.add(ParserBase::Token::create(TokenType::ClosingSquareBracket, SYSSTR("ClosingSquareBracket"), SYSSTR("]")));
             tc.add(ParserBase::Token::create(TokenType::OpeningSquareBracket, SYSSTR("OpeningSquareBracket"), SYSSTR("[")));
             tc.add(ParserBase::Token::create(TokenType::Comma, SYSSTR("Comma"), SYSSTR(",")));
             tc.add(ParserBase::Token::create(TokenType::Colon, SYSSTR("Colon"), SYSSTR(":")));
+            tc.add(ParserBase::Token::create(TokenType::True, SYSSTR("True"), SYSSTR("true")));
+            tc.add(ParserBase::Token::create(TokenType::False, SYSSTR("False"), SYSSTR("false")));
 
             tc.set_eof_token(TokenType::EndOfFile);
 

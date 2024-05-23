@@ -174,13 +174,20 @@ namespace RC
         {
             setup_paths(moduleFilePath);
 
+            // Setup the log file
+            auto& file_device = Output::set_default_devices<Output::NewFileDevice>();
+            fprintf(stderr, "log dir: %s\n", (m_log_directory / m_log_file_name).c_str());
+            file_device.set_file_name_and_path(to_system(m_log_directory / m_log_file_name));
+
+            create_simple_console();
+
             try
             {
                 settings_manager.deserialize(m_settings_path_and_file);
             }
             catch (std::exception& e)
             {
-                create_emergency_console_for_early_error(std::format(SYSSTR("The IniParser failed to parse: {}"), to_system(e.what())));
+                set_error("The IniParser failed to parse: %s", to_system(e.what()).data());
                 return;
             }
 
@@ -201,11 +208,6 @@ namespace RC
             m_input_handler.init();
 #endif
 
-            // Setup the log file
-            auto& file_device = Output::set_default_devices<Output::NewFileDevice>();
-            file_device.set_file_name_and_path(to_system(m_log_directory / m_log_file_name));
-
-            create_simple_console();
 
 #ifdef HAS_UI
             if (settings_manager.Debug.DebugConsoleEnabled)
@@ -228,6 +230,8 @@ namespace RC
             void* string_address = SinglePassScanner::string_scan(str_to_find, ScanTarget::Core);
             Output::send(SYSSTR("\n\nFound string '{}' at {}\n\n"), SystemStringViewType{str_to_find}, string_address);
             //*/
+
+            Output::send(SYSSTR("dir: {}\n"), (m_log_directory / m_log_file_name));
 
             Output::send(SYSSTR("Console created\n"));
             Output::send(SYSSTR("UE4SS - v{}.{}.{}{}{} - Git SHA #{}\n"),
@@ -282,7 +286,7 @@ namespace RC
 
             setup_mods();
             install_cpp_mods();
-            start_cpp_mods();
+            start_cpp_mods(IsInitialStartup::Yes);
 
             setup_mod_directory_path();
 
@@ -332,6 +336,8 @@ namespace RC
     {
         ProfilerSetThreadName("UE4SS-InitThread");
         ProfilerScope();
+
+        Output::send(SYSSTR("Initializing ue4ss program\n"));
 
         try
         {
@@ -523,6 +529,8 @@ namespace RC
     auto UE4SSProgram::setup_unreal() -> void
     {
         ProfilerScope();
+        Output::send(SYSSTR("Setting up unreal\n"));
+
         // Retrieve offsets from the config file
         const SystemStringType offset_overrides_section{SYSSTR("OffsetOverrides")};
 
@@ -843,7 +851,6 @@ namespace RC
             if (settings_manager.General.UseUObjectArrayCache)
             {
                 m_debugging_gui.get_live_view().set_listeners_allowed(true);
-                m_debugging_gui.get_live_view().set_listeners();
             }
             else
             {
@@ -857,6 +864,7 @@ namespace RC
                     if (!was_gui_open)
                     {
                         m_render_thread = std::jthread{&GUI::gui_thread, &m_debugging_gui};
+                        fire_ui_init_for_cpp_mods();
                     }
                 });
             });
@@ -1142,6 +1150,19 @@ namespace RC
         }
     }
 
+    auto UE4SSProgram::fire_ui_init_for_cpp_mods() -> void
+    {
+        ProfilerScope();
+        for (const auto& mod : m_mods)
+        {
+            if (!dynamic_cast<CppMod*>(mod.get()))
+            {
+                continue;
+            }
+            mod->fire_ui_init();
+        }
+    }
+
     auto UE4SSProgram::fire_program_start_for_cpp_mods() -> void
     {
         ProfilerScope();
@@ -1281,7 +1302,7 @@ namespace RC
         }
     }
 
-    auto UE4SSProgram::start_cpp_mods() -> void
+    auto UE4SSProgram::start_cpp_mods(IsInitialStartup is_initial_startup) -> void
     {
         ProfilerScope();
         auto error_message = start_mods<CppMod>();
@@ -1289,6 +1310,17 @@ namespace RC
         {
             set_error(error_message.c_str());
         }
+
+#ifdef HAS_UI
+        // If this is the initial startup, notify mods that the UI has initialized.
+        // This isn't completely accurate since the UI will usually have started a while ago.
+        // However, we can't immediately notify mods of this because no mods have been started at that point.
+        // We only need to do this for the initial start of UE4SS because after that, more accurate notifications will happen when the UI is closed an reopened.
+        if (is_initial_startup == IsInitialStartup::Yes && m_render_thread.get_id() != std::this_thread::get_id())
+        {
+            fire_ui_init_for_cpp_mods();
+        }
+#endif
     }
 
     auto UE4SSProgram::uninstall_mods() -> void
@@ -1340,18 +1372,26 @@ namespace RC
 
 // Remove key binds that were set from Lua scripts
 #ifdef HAS_INPUT
-        m_input_handler.get_events_safe([&](Input::KeySet& input_event) -> void {
-            for (auto& [key, vector_of_key_data] : input_event.key_data)
-            {
-                std::erase_if(vector_of_key_data, [&](Input::KeyData& key_data) -> bool {
-                    return key_data.custom_data == 1;
+        m_input_handler.get_events_safe([&](auto& key_set) {
+            std::erase_if(key_set.key_data, [&](auto& item) -> bool {
+                auto& [_, key_data] = item;
+                bool were_all_events_registered_from_lua = true;
+                std::erase_if(key_data, [&](Input::KeyData& key_data) -> bool {
+                    // custom_data == 1: Bind came from Lua, and custom_data2 is nullptr.
+                    // custom_data == 2: Bind came from C++, and custom_data2 is a pointer to KeyDownEventData. Must free it.
+                    if (key_data.custom_data == 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        were_all_events_registered_from_lua = false;
+                        return false;
+                    }
                 });
 
-                if (vector_of_key_data.empty())
-                {
-                    m_input_handler.clear_subscribed_key(key);
-                }
-            }
+                return were_all_events_registered_from_lua;
+            });
         });
 #endif
 
@@ -1519,18 +1559,20 @@ namespace RC
         // Not locking here because if the worst that could happen as far as I know is that the event loop processes the event slightly late.
         return m_queued_events.empty();
     }
+
 #ifdef HAS_INPUT
-    auto UE4SSProgram::register_keydown_event(Input::Key key, const Input::EventCallbackCallable& callback, uint8_t custom_data) -> void
+    auto UE4SSProgram::register_keydown_event(Input::Key key, const Input::EventCallbackCallable& callback, uint8_t custom_data, void* custom_data2) -> void
     {
-        m_input_handler.register_keydown_event(key, callback, custom_data);
+        m_input_handler.register_keydown_event(key, callback, custom_data, custom_data2);
     }
 
     auto UE4SSProgram::register_keydown_event(Input::Key key,
                                               const Input::Handler::ModifierKeyArray& modifier_keys,
                                               const Input::EventCallbackCallable& callback,
-                                              uint8_t custom_data) -> void
+                                              uint8_t custom_data,
+                                              void* custom_data2) -> void
     {
-        m_input_handler.register_keydown_event(key, modifier_keys, callback, custom_data);
+        m_input_handler.register_keydown_event(key, modifier_keys, callback, custom_data, custom_data2);
     }
 
     auto UE4SSProgram::is_keydown_event_registered(Input::Key key) -> bool
