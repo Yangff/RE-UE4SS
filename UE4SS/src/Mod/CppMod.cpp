@@ -1,4 +1,5 @@
 #define NOMINMAX
+#define _GNU_SOURCE
 
 #include <filesystem>
 
@@ -8,10 +9,10 @@
 
 #ifdef LINUX
 #define printf_s printf
-#define _GNU_SOURCE
 #include <dlfcn.h>
 #endif
 
+long cpp_mod_signature = 0;
 namespace RC
 {
     CppMod::CppMod(UE4SSProgram& program, SystemStringType&& mod_name, SystemStringType&& mod_path) : Mod(program, std::move(mod_name), std::move(mod_path))
@@ -68,7 +69,12 @@ namespace RC
 
 #else
         // use RTLD_LOCAL to avoid symbol conflicts
-        m_dl_handle = dlopen(dll_path.c_str(), RTLD_LAZY | RTLD_LOCAL);
+        struct link_map *map;
+        Dl_info info;
+        dladdr1(&cpp_mod_signature, &info, (void**) &map, RTLD_DL_LINKMAP);
+        Lmid_t lmid = 0;
+        dlinfo(info.dli_fbase, RTLD_DI_LMID, &lmid);
+        m_dl_handle = dlmopen(lmid, dll_path.c_str(), RTLD_LAZY | RTLD_LOCAL);
         if (!m_dl_handle)
         {
             Output::send<LogLevel::Warning>(SYSSTR("Failed to load dll <{}> for mod {}, because: {}\n"), to_system_string(dll_path), m_mod_name, dlerror());
