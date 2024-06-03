@@ -277,6 +277,29 @@ extern "C"
         }
         */
 
+        const char* exam_sym_list[] = {
+            "_Znam",
+            "_ZdaPv",
+            "_Znwm",
+            "_ZnwmSt11align_val_t",
+            "_ZnamSt11align_val_t",
+            "_ZdlPvSt11align_val_t",
+            "_ZdaPvSt11align_val_t",
+        };
+        // you're c, not c++, now loop through the symbols
+        for (int i = 0; i < sizeof(exam_sym_list) / sizeof(exam_sym_list[0]); i++)
+        {
+            const char* sym = exam_sym_list[i];
+            void* addr = dlsym(RTLD_DEFAULT, sym);
+            if (addr == NULL)
+            {
+                fprintf(stderr, "UE4SS Failed to find symbol: %s\n", sym);
+            }
+            else
+            {
+                fprintf(stderr, "UE4SS Found symbol: %s at %p\n", sym, addr);
+            }
+        }
         return orig(hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
     }
 }

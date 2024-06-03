@@ -8,7 +8,6 @@
 int __attribute__((visibility("default"))) __libc_start_main(
     int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end)
 {
-
     // remove LD_PRELOAD from environ
     int nenv = 0;
     for (int i = 0; environ[i]; i++)
@@ -44,13 +43,38 @@ int __attribute__((visibility("default"))) __libc_start_main(
     memcpy(path, dl_info.dli_fname, i + 1);
     // append libUE4SS.so
     memcpy(path + i + 1, "libUE4SS.so", strlen("libUE4SS.so") + 1);
-    fprintf(stderr, "libUE4SS.so path: %s, flag = %d\n", path, RTLD_LAZY | RTLD_DEEPBIND);
-    void* handle = dlopen(path, RTLD_LAZY | RTLD_DEEPBIND);
+    fprintf(stderr, "libUE4SS.so path: %s, flag = %d\n", path, RTLD_LAZY);
+    void* handle = dlopen(path, RTLD_LAZY | RTLD_GLOBAL);
     if (!handle)
     {
         fprintf(stderr, "dlopen failed: %s\n", dlerror());
         return -1;
     }
+        const char* exam_sym_list[] = {
+            "_Znam",
+            "_ZdaPv",
+            "_Znwm",
+            "_ZnwmSt11align_val_t",
+            "_ZnamSt11align_val_t",
+            "_ZdlPvSt11align_val_t",
+            "_ZdaPvSt11align_val_t",
+            "_ZN2RC14CppUserModBaseD2Ev",
+        };
+        // you're c, not c++, now loop through the symbols
+        for (int i = 0; i < sizeof(exam_sym_list) / sizeof(exam_sym_list[0]); i++)
+        {
+            const char* sym = exam_sym_list[i];
+            void* addr = dlsym(RTLD_DEFAULT, sym);
+            if (addr == NULL)
+            {
+                fprintf(stderr, "Failed to find symbol: %s\n", sym);
+                return 0;
+            }
+            else
+            {
+                fprintf(stderr, "Found symbol: %s at %p\n", sym, addr);
+            }
+        }
     // call ue4ss's libc_start_main
     int __libc_start_main_proxied(
             typeof(&__libc_start_main) orig,
