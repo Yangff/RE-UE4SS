@@ -73,7 +73,8 @@ namespace RC
         Dl_info info;
         dladdr1(&cpp_mod_signature, &info, (void**) &map, RTLD_DL_LINKMAP);
         Lmid_t lmid = 0;
-        dlinfo(info.dli_fbase, RTLD_DI_LMID, &lmid);
+        dlinfo(map, RTLD_DI_LMID, &lmid);
+        Output::send(SYSSTR("Loading mod {} with lmid {}\n"), m_mod_name, lmid);
         m_dl_handle = dlmopen(lmid, dll_path.c_str(), RTLD_LAZY | RTLD_LOCAL);
         if (!m_dl_handle)
         {

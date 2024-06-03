@@ -131,35 +131,14 @@ extern "C"
         struct libname_list* l_libname;
         Elf64_Dyn* l_info[DT_NUM + 0 + DT_VERSIONTAGNUM + DT_EXTRANUM + DT_VALNUM + DT_ADDRNUM];
     };
-    int __libc_start_main(
+    int __libc_start_main_orig(
             int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end);
-    
-    int __ue4ss_private_init(typeof(&__libc_start_main) orig, int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end) {
-        // now we're in the new link map
-        // all globals can be used only after this point
-        return orig(main, argc, argv, init, fini, rtld_fini, stack_end);
-    }
-
-    int __libc_start_main(
+   
+    int __libc_start_main_proxied(
+            typeof(&__libc_start_main_orig) orig,
             int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end)
     {
         next_main = main;
-        typeof(&__libc_start_main) orig = (typeof(&__libc_start_main))dlsym(RTLD_NEXT, "__libc_start_main");
-
-        Dl_info dl_info;
-        // find libUE4SS.so path using dlfcn
-        if (dladdr((void*)UE4SS_Start, &dl_info) == 0)
-        {
-            fprintf(stderr, "dladdr failed at early: %s\n", dlerror());
-            return -1;
-        }
-        fprintf(stderr, "Found libUE4SS.so @ %s\n", dl_info.dli_fname);
-        void* handle = dlmopen(LM_ID_NEWLM, dl_info.dli_fname, RTLD_LAZY | RTLD_GLOBAL | RTLD_DEEPBIND);
-        
-        // get __ue4ss_private_init
-        typeof(&__ue4ss_private_init) __m_ue4ss_private_init = (typeof(&__ue4ss_private_init))dlsym(handle, "__ue4ss_private_init");
-        fprintf(stderr, "Found __ue4ss_private_init @ %p\n", __m_ue4ss_private_init);
-        fprintf(stderr, "Old __ue4ss_private_init @ %p\n", __ue4ss_private_init);
         /*
         // gxx fix
         Dl_info dl_info;
@@ -297,23 +276,8 @@ extern "C"
                     &data);
         }
         */
-        // remove LD_PRELOAD from environ
-        int nenv = 0;
-        for (int i = 0; environ[i]; i++)
-            nenv++;
-        for (int i = 0; i < nenv; i++)
-        {
-            if (strncmp(environ[i], "LD_PRELOAD=", 11) == 0)
-            {
-                fprintf(stderr, "Found LD_PRELOAD @%d %s\n", i, environ[i]);
-                environ[i] = environ[nenv - 1];
-                nenv--;
-            }
-        }
-        environ[nenv] = NULL;
 
-        return __m_ue4ss_private_init(orig, hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
-        //return orig(hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
+        return orig(hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
     }
 }
 
