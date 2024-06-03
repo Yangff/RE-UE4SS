@@ -23,7 +23,11 @@
 #else
 
 #ifndef RC_INPUT_API
-#define RC_INPUT_API
+#ifndef RC_INPUT_EXPORTS
+#define RC_INPUT_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_INPUT_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

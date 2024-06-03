@@ -15,7 +15,11 @@
 #else
 
 #ifndef RC_UE4SS_API
-#define RC_UE4SS_API
+#ifndef RC_UE4SS_EXPORTS
+#define RC_UE4SS_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_UE4SS_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

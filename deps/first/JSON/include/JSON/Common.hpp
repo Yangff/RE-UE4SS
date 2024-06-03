@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_JSON_API
-#define RC_JSON_API
+#ifndef RC_JSON_EXPORTS
+#define RC_JSON_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_JSON_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_PB_API
-#define RC_PB_API
+#ifndef RC_PARSER_BASE_EXPORTS
+#define RC_PB_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_PB_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

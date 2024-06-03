@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_LMS_API
-#define RC_LMS_API
+#ifndef RC_LUA_MADE_SIMPLE_EXPORTS
+#define RC_LMS_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_LMS_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

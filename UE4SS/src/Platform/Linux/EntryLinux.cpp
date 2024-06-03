@@ -133,7 +133,7 @@ extern "C"
         Elf64_Dyn* l_info[DT_NUM + 0 + DT_VERSIONTAGNUM + DT_EXTRANUM + DT_VALNUM + DT_ADDRNUM];
     };
 
-    int __libc_start_main(
+    int __attribute__((visibility("default"))) __libc_start_main(
             int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end)
     {
         next_main = main;

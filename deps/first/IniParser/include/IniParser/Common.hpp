@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_INI_PARSER_API
-#define RC_INI_PARSER_API
+#ifndef RC_INI_PARSER_EXPORTS
+#define RC_INI_PARSER_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_INI_PARSER_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

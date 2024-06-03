@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_FILE_API
-#define RC_FILE_API
+#ifndef RC_FILE_EXPORTS
+#define RC_FILE_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_FILE_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

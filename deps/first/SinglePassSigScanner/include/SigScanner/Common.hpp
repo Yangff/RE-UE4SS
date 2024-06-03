@@ -21,7 +21,11 @@
 #else
 
 #ifndef RC_SPSS_API
-#define RC_SPSS_API
+#ifndef RC_SINGLE_PASS_SIG_SCANNER_EXPORTS
+#define RC_SPSS_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_SPSS_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

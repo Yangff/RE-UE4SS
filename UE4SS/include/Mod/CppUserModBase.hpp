@@ -29,7 +29,7 @@ namespace RC
 
     // When making C++ mods, keep in mind that they will break if UE4SS and the mod don't use the same C Runtime library version
     // This includes them being compiled in different configurations (Debug/Release).
-    class CppUserModBase
+    class RC_UE4SS_API CppUserModBase
     {
       protected:
 #ifdef HAS_UI

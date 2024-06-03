@@ -20,7 +20,11 @@
 #else
 
 #ifndef RC_ASM_API
-#define RC_ASM_API
+#ifndef RC_ASM_HELPER_EXPORTS
+#define RC_ASM_API __attribute__ ((visibility ("default")))//extern
+#else
+#define RC_ASM_API __attribute__ ((visibility ("default")))
+#endif
 #endif
 
 #endif

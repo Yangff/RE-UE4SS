@@ -77,7 +77,8 @@ local PLATFORM_TYPES = {
         },
         ["cxflags"] = {
             "clang::-fno-delete-null-pointer-checks",
-            "clang::-gdwarf"
+            "clang::-gdwarf",
+            "-fvisibility=hidden"
         }
     }
 }
