@@ -44,8 +44,8 @@ int __libc_start_main(
     memcpy(path, dl_info.dli_fname, i + 1);
     // append libUE4SS.so
     memcpy(path + i + 1, "libUE4SS.so", strlen("libUE4SS.so") + 1);
-    fprintf(stderr, "libUE4SS.so path: %s\n", path);
-    void* handle = dlopen(path, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+    fprintf(stderr, "libUE4SS.so path: %s, flag = %d\n", path, RTLD_LAZY | RTLD_DEEPBIND);
+    void* handle = dlopen(path, RTLD_LAZY | RTLD_GLOBAL | RTLD_DEEPBIND);
     if (!handle)
     {
         fprintf(stderr, "dlopen failed: %s\n", dlerror());
