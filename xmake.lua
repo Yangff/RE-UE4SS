@@ -69,6 +69,7 @@ on_install(function(target) end)
 
 includes("deps")
 includes("UE4SS")
+includes("Loader")
 -- includes("UVTD")
 
 -- TODO: Remove this before the next release. It only exists to maintain backwards compat
