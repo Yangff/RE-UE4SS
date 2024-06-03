@@ -1,4 +1,5 @@
 #define NOMINMAX
+#define _GNU_SOURCE
 
 #include <filesystem>
 
@@ -8,10 +9,10 @@
 
 #ifdef LINUX
 #define printf_s printf
-#define _GNU_SOURCE
 #include <dlfcn.h>
 #endif
 
+long cpp_mod_signature = 0;
 namespace RC
 {
     CppMod::CppMod(UE4SSProgram& program, SystemStringType&& mod_name, SystemStringType&& mod_path) : Mod(program, std::move(mod_name), std::move(mod_path))
