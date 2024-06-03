@@ -27,6 +27,8 @@ using namespace RC;
 pthread_t ue4ss_mainthread;
 static bool UE4SSInited = false;
 
+Lmid_t g_lmid = 0;
+
 void UE4SS_Start()
 {
     // find libUE4SS.so path using dlfcn
@@ -34,7 +36,6 @@ void UE4SS_Start()
     if (dladdr((void*)UE4SS_Start, &dl_info) == 0)
     {
         std::cerr << "Failed to find libUE4SS.so path" << std::endl;
-        return;
     }
 // #define EARLY_THROW_TEST
 #ifdef EARLY_THROW_TEST
@@ -132,12 +133,34 @@ extern "C"
         struct libname_list* l_libname;
         Elf64_Dyn* l_info[DT_NUM + 0 + DT_VERSIONTAGNUM + DT_EXTRANUM + DT_VALNUM + DT_ADDRNUM];
     };
+    int __libc_start_main(
+            int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end);
+    
+    int __ue4ss_private_init(Lmid_t lmid, typeof(&__libc_start_main) orig, int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end) {
+        // now we're in the new link map
+        // all globals can be used only after this point
+        return orig(main, argc, argv, init, fini, rtld_fini, stack_end);
+    }
 
     int __libc_start_main(
             int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end)
     {
         next_main = main;
         typeof(&__libc_start_main) orig = (typeof(&__libc_start_main))dlsym(RTLD_NEXT, "__libc_start_main");
+
+        Dl_info dl_info;
+        // find libUE4SS.so path using dlfcn
+        if (dladdr((void*)UE4SS_Start, &dl_info) == 0)
+        {
+            fprintf(stderr, "dladdr failed at early: %s\n", dlerror());
+            return -1;
+        }
+        
+        void* handle = dlmopen(LM_ID_NEWLM, dl_info.dli_fname, RTLD_LAZY | RTLD_GLOBAL | RTLD_DEEPBIND);
+        
+        // get __ue4ss_private_init
+        typeof(&__ue4ss_private_init) __m_ue4ss_private_init = (typeof(&__ue4ss_private_init))dlsym(handle, "__ue4ss_private_init");
+        /*
         // gxx fix
         Dl_info dl_info;
         Elf64_Sym* sym;
@@ -273,7 +296,7 @@ extern "C"
                     },
                     &data);
         }
-
+        */
         // remove LD_PRELOAD from environ
         int nenv = 0;
         for (int i = 0; environ[i]; i++)
@@ -289,7 +312,8 @@ extern "C"
         }
         environ[nenv] = NULL;
 
-        return orig(hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
+        return __m_ue4ss_private_init(lmid, orig, hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
+        //return orig(hooked_main, argc, argv, init, fini, rtld_fini, stack_end);
     }
 }
 
