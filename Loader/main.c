@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int __libc_start_main(
+int __attribute__((visibility("default"))) __libc_start_main(
     int (*main)(int, char**, char**), int argc, char** argv, int (*init)(int, char**, char**), void (*fini)(void), void (*rtld_fini)(void), void* stack_end)
 {
 
@@ -45,7 +45,7 @@ int __libc_start_main(
     // append libUE4SS.so
     memcpy(path + i + 1, "libUE4SS.so", strlen("libUE4SS.so") + 1);
     fprintf(stderr, "libUE4SS.so path: %s, flag = %d\n", path, RTLD_LAZY | RTLD_DEEPBIND);
-    void* handle = dlopen(path, RTLD_LAZY | RTLD_GLOBAL | RTLD_DEEPBIND);
+    void* handle = dlopen(path, RTLD_LAZY | RTLD_DEEPBIND);
     if (!handle)
     {
         fprintf(stderr, "dlopen failed: %s\n", dlerror());
