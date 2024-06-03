@@ -45,10 +45,10 @@ int __libc_start_main(
     // append libUE4SS.so
     memcpy(path + i + 1, "libUE4SS.so", strlen("libUE4SS.so") + 1);
     fprintf(stderr, "libUE4SS.so path: %s\n", path);
-    void* handle = dlmopen(LM_ID_NEWLM, path, RTLD_LAZY | RTLD_DEEPBIND);
+    void* handle = dlopen(path, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
     if (!handle)
     {
-        fprintf(stderr, "dlmopen failed: %s\n", dlerror());
+        fprintf(stderr, "dlopen failed: %s\n", dlerror());
         return -1;
     }
     // call ue4ss's libc_start_main
