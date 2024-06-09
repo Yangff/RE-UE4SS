@@ -1,7 +1,5 @@
 
-if is_plat("windows") then
-    includes("proxy_generator")
-end
+includes("proxy_generator")
 
 local hasWindows = is_plat("windows")
 local uiMode = get_config("ue4ssUI")
