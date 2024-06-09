@@ -3237,6 +3237,9 @@ namespace RC::GUI
                 if (ImGui::InputText("##HasProperty", &Filter::HasProperty::s_internal_properties))
                 {
                     Filter::HasProperty::list_properties.clear();
+                    if (!Filter::HasProperty::s_internal_properties.empty())
+                    {
+                        std::istringstream ss(Filter::HasProperty::s_internal_properties);
                         std::string property_name;
                         while (std::getline(ss, property_name, ','))
                         {

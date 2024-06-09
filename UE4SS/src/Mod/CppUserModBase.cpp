@@ -50,6 +50,8 @@ namespace RC
             });
         });
 #endif
+    }
+    
 #ifdef HAS_UI
     auto CppUserModBase::register_tab(UEStringViewType tab_name, GUI::GUITab::RenderFunctionType render_function) -> void
     {

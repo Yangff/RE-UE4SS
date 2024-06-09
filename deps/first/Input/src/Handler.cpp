@@ -64,14 +64,6 @@ namespace RC::Input
         m_subscribed_keys[key] = true;
         key_data.custom_data2 = custom_data2;
         key_data.requires_modifier_keys = true;
-
-        for (const auto& modifier_key : modifier_keys)
-        {
-            if (modifier_key != ModifierKey::MOD_KEY_START_OF_ENUM)
-            {
-                key_data.required_modifier_keys.emplace_back(modifier_key);
-            }
-        }
     }
 
     auto Handler::is_keydown_event_registered(Input::Key key) -> bool
