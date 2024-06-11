@@ -3320,7 +3320,7 @@ Overloads:
             return;
         }
 
-        for (const auto& mod : UE4SSProgram::m_mods)
+        for (const auto& mod : UE4SSProgram::get_program().m_mods)
         {
             if (auto cpp_mod = dynamic_cast<CppMod*>(mod.get()); cpp_mod && mod->is_started())
             {
@@ -3340,7 +3340,7 @@ Overloads:
             return;
         }
 
-        for (const auto& mod : UE4SSProgram::m_mods)
+        for (const auto& mod : UE4SSProgram::get_program().m_mods)
         {
             if (auto cpp_mod = dynamic_cast<CppMod*>(mod.get()); cpp_mod && mod->is_started())
             {
