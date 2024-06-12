@@ -14,3 +14,4 @@ target(projectName)
     )
     
     add_deps("File", "Helpers", "ParserBase")
+    add_packages("fmt")
