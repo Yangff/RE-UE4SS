@@ -12,4 +12,3 @@ target(projectName)
     add_files("src/**.cpp")
     
     add_deps("File")
-    add_packages("fmt")
