@@ -42,7 +42,7 @@ jobs:
       - name: Setup xmake
         uses: xmake-io/github-action-setup-xmake@v1
         with:
-          xmake-version: 2.3.2
+          xmake-version: 2.3.3
           actions-cache-folder: '.xmake-cache'
           actions-cache-key: 'linux-test'
       - name: Build
