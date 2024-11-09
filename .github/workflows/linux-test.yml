@@ -3,7 +3,7 @@ name: Linux Test Build
 on:
   workflow_dispatch: {}
   push:
-    branches: [ "linux-port" ]
+    branches: [ "*" ]
     paths:
       - "UE4SS/src/**"
       - "UE4SS/include/**"
